@@ -23613,7 +23613,7 @@
 	var React = __webpack_require__(1);
 	var RadioGroup = __webpack_require__(200);
 
-	var url = '10.0.1.154';
+	var url = '50.177.97.139';
 	var port = '8087';
 
 	var Pond = new React.createClass({
@@ -23926,7 +23926,6 @@
 			socket.on('my response', (function (msg) {
 				var dtao = JSON.parse(msg.data);
 				this.setState({ spots: dtao });
-				console.log(dtao);
 			}).bind(this));
 		},
 		render: function render() {
@@ -23943,6 +23942,7 @@
 	});
 
 	module.exports = Yard;
+	//console.log(dtao)
 
 /***/ },
 /* 200 */

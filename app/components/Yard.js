@@ -1,7 +1,7 @@
 var React = require('react');
 var RadioGroup = require('react-radio-group');
 
-var url = '10.0.1.154';
+var url = '50.177.97.139';
 var port = '8087'
 
 var Pond = new React.createClass({
@@ -254,7 +254,7 @@ var Yard = React.createClass({
 		socket.on('my response', function(msg) {
 			var dtao = JSON.parse(msg.data)
 			this.setState({spots: dtao})
-			console.log(dtao)
+			//console.log(dtao)
 		}.bind(this));
 	},	
 	render: function(){
