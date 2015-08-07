@@ -50,8 +50,12 @@
 	var Router = __webpack_require__(157);
 	var routes = __webpack_require__(196);
 
+	var liStyle = {
+		display: 'inline'
+	};
+
 	Router.run(routes, function (Root) {
-	  React.render(React.createElement(Root, null), document.getElementById('app'));
+		React.render(React.createElement(Root, null), document.getElementById('app'));
 	});
 
 /***/ },
@@ -23547,14 +23551,22 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Main = __webpack_require__(197);
-	var Home = __webpack_require__(198);
-	var Yard = __webpack_require__(199);
+	var Main = __webpack_require__(198);
+	var Home = __webpack_require__(199);
+	var Yard = __webpack_require__(197);
+	var But = __webpack_require__(200);
 	var Router = __webpack_require__(157);
 	var DefaultRoute = Router.DefaultRoute;
 	var Route = Router.Route;
 
-	module.exports = React.createElement(Route, { name: 'app', path: '/', handler: Yard });
+	module.exports = React.createElement(
+	  Route,
+	  { name: 'app', path: '/', handler: Main },
+	  React.createElement(Route, { name: 'yard', path: '/yard', handler: Yard }),
+	  React.createElement(Route, { name: 'home', path: '/home', handler: Home }),
+	  React.createElement(Route, { name: 'but', path: '/but', handler: But }),
+	  React.createElement(DefaultRoute, { handler: Yard })
+	);
 
 /***/ },
 /* 197 */
@@ -23563,63 +23575,17 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-
-	var Main = React.createClass({
-	  displayName: 'Main',
-
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      null,
-	      'Hello World'
-	    );
-	  }
-	});
-
-	module.exports = Main;
-
-/***/ },
-/* 198 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-
-	var Home = React.createClass({
-		displayName: 'Home',
-
-		componentDidMount: function componentDidMount() {
-			var namespace = '/test';
-			var socket = io.connect('http://10.0.1.154:8087' + namespace);
-		},
-		render: function render() {
-			return React.createElement(
-				'div',
-				null,
-				'Home2'
-			);
-		}
-	});
-
-	module.exports = Home;
-
-/***/ },
-/* 199 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var RadioGroup = __webpack_require__(200);
+	var RadioGroup = __webpack_require__(201);
+	var But = __webpack_require__(200);
 
 	var url = '50.177.97.139';
-	var port = '8087';
+	var port = '8088';
 
 	var Pond = new React.createClass({
 
 		turnwhat: function turnwhat() {
 			var state = this.props.spot.state;
+			console.log('state is :' + state);
 			if (state == 'off') {
 				var message = 'turn ON for: ' + this.state.value + ' min';
 				//return{message: message, img: "img/Waterfall_off.gif"}
@@ -23636,7 +23602,7 @@
 			}
 		},
 		getInitialState: function getInitialState() {
-			return { value: 10, pime: { message: 'cat', img: 'img/on100.gif' } };
+			return { value: 10, pime: { message: 'cat', img: 'img/waiting.gif' } };
 		},
 		componentDidMount: function componentDidMount() {
 			return { value: this.props.spot.tleft };
@@ -23649,7 +23615,7 @@
 			var state = this.props.spot.state;
 			if (state == 'off') {
 				//console.log('turning on');
-				this.props.onUserInput({ spot: this.props.spot.spot, til: this.state.value, state: 'on' });
+				this.props.onUserInput({ spot: this.props.spot.spot, til: this.state.value, state: 'timer' });
 			} else {
 				//console.log('turning off');
 				this.props.onUserInput({ spot: this.props.spot.spot, til: -1, state: 'off' });
@@ -23694,9 +23660,9 @@
 
 	var Spot = new React.createClass({
 		waitSlide: false,
-		tval: -77,
+		tval: -1,
 		getInitialState: function getInitialState() {
-			return { value: 10, selectedValue: 'timed', img: 'img/timer100.gif', tval: 6 };
+			return { value: 10, selectedValue: 'timed', img: 'img/loading60.gif', tval: 6 };
 		},
 		componentDidMount: function componentDidMount() {
 			//console.log(this.props.spot.tleft);
@@ -23707,6 +23673,7 @@
 			this.setState({ value: event.target.value });
 			//console.log(event.target.value)
 			this.tval = event.target.value;
+			console.log(this.tval);
 		},
 		handleRadio: function handleRadio(value) {
 			//console.log(value)
@@ -23714,11 +23681,11 @@
 			if (value == 'on') {
 				this.props.onUserInput({ spot: this.props.spot.spot, til: -1, state: 'on' });
 				this.waitSlide = false;
-				this.rbut = value;
+				// this.rbut = value;
 			} else if (value == 'off') {
 				this.props.onUserInput({ spot: this.props.spot.spot, til: -1, state: 'off' });
 				this.waitSlide = false;
-				this.rbut = value;
+				// this.rbut = value;
 			} else {
 				this.dealWithTimed();
 			}
@@ -23729,32 +23696,23 @@
 		dealWithTimed: function dealWithTimed() {
 			this.rbut = 'timed';
 			this.waitSlide = 'true';
-			this.props.onUserInput({ spot: this.props.spot.spot, til: 4, state: 'timer' });
+			console.log(this.props.spot.tleft);
+			this.props.onUserInput({ spot: this.props.spot.spot, til: 1, state: 'timer' });
 			console.log('dealin  w timed');
-			//this.til= this.state.value;
-			//console.log(this.til)
-			this.ima = 'img/timer100.gif';
-			//this.props.onUserInput({spot: this.props.spot.spot, til: this.state.value, state: 'on'});
+			this.ima = 'img/loadno60.gif';
 		},
 		radioLand: function radioLand() {
 			//fires whenever state changes
 			var state = this.props.spot.state;
 			var til = this.props.spot.tleft;
-			//console.log(this.props.spot)
 			var ima, tleft;
 			if (this.waitSlide) {
-				//console.log('in waitSlide')
-				//this.rbut='timed'
 				tleft = til;
-				//this.ima = 'img/timer100.gif'
-				//this.setState({tval: 89})
 			} else if (state == 'on') {
-				//console.log(this.props.spot.spot + ' is on')
 				this.rbut = 'on';
 				tleft = '';
 				this.ima = 'img/on100.gif';
 			} else if (state == 'off') {
-				//console.log(this.props.spot.spot + ' is off')
 				tleft = '';
 				this.rbut = 'off';
 				this.ima = 'img/off100.gif';
@@ -23763,7 +23721,7 @@
 				tleft = til;
 				this.rbut = 'timed';
 				this.tval = til;
-				this.ima = 'img/timer100.gif';
+				this.ima = 'img/loading60.gif';
 			} else if (state == 'waiting') {
 				console.log('radioland is waiting');
 				tleft = 'til';
@@ -23783,7 +23741,6 @@
 			if (this.radioLand().rbut == 'timed') {
 				console.log('image is timer');
 				this.props.onUserInput({ spot: this.props.spot.spot, til: this.state.value, state: 'timer' });
-				//this.setState({tval: til})
 			}
 		},
 		render: function render() {
@@ -23832,31 +23789,7 @@
 						}
 					)
 				),
-				React.createElement(
-					'div',
-					{ className: 'button-med' },
-					React.createElement(
-						'a',
-						{ onClick: this.handleTimerButClick },
-						' ',
-						React.createElement('img', { id: 'imb', src: this.radioLand().ima, title: 'timer on or off', width: '42', height: '42' }),
-						React.createElement(
-							'span',
-							null,
-							this.tval
-						)
-					)
-				),
-				React.createElement(
-					'span',
-					null,
-					this.props.spot.tleft
-				),
-				React.createElement(
-					'span',
-					null,
-					this.radioLand().tleft
-				),
+				React.createElement(But, { img: this.radioLand().ima, tleft: this.tval, onButClick: this.handleTimerButClick }),
 				React.createElement(
 					'div',
 					null,
@@ -23895,38 +23828,61 @@
 		}
 	});
 
+	var socket, sse;
+
 	var Yard = React.createClass({
 		displayName: 'Yard',
 
+		mounted: false,
 		getInitialState: function getInitialState() {
 			return { spots: { 'pond': { 'spot': 'pond', 'tleft': -99, 'state': 'waiting' }, 'center': { 'spot': 'center', 'tleft': -99, 'state': 'waiting' }, 'bridge': { 'spot': 'bridge', 'tleft': -99, 'state': 'waiting' } } };
 		},
 		handleWaiting: function handleWaiting(wspots) {
-			this.setState({ spots: wspots });
+			console.log('mounted is ' + this.mounted);
+			if (this.mounted) {
+				this.setState({ spots: wspots });
+			}
 		},
 		handleUserInput: function handleUserInput(timerSet) {
 			var that = this;
 			var geturl = 'http://' + url + ':' + port + '/ctrlWater/';
-			$.get(geturl, timerSet, function (data) {
+			$.get(geturl, timerSet, (function (data) {
 				console.log(data.status);
-				that.setState({ spots: data.status });
-			});
+				this.setState({ spots: data.status });
+			}).bind(this));
 		},
 		componentDidMount: function componentDidMount() {
+			console.log('yard mounted');
+			this.mounted = true;
 			var that = this;
-			$.get('http://' + url + ':' + port + '/report/', function (data) {
-				that.setState({ spots: data.spots });
-			});
-			var namespace = '/test';
-			console.log(url);
-			var socket = io.connect('http://' + url + ':' + port + namespace);
-			socket.on('connect', function () {
-				socket.emit('my event', { data: 'I\'m connected!' });
-			});
-			socket.on('my response', (function (msg) {
-				var dtao = JSON.parse(msg.data);
-				this.setState({ spots: dtao });
+			$.get('http://' + url + ':' + port + '/report/', (function (data) {
+				this.setState({ spots: data.spots });
 			}).bind(this));
+			sse = new EventSource('http://10.0.1.154:8088/my_event_source');
+			sse.onmessage = (function (message) {
+				console.log('message fron sse');
+				var sseData = JSON.parse(message.data).data;
+				console.log(sseData);
+				this.setState({ spots: sseData });
+			}).bind(this)
+
+			// var namespace = '/test';
+			// console.log(url)
+			// socket = io.connect('http://'+url+':'+port+namespace, {reconnect: false});
+			// socket.on('connect', function() {
+			// 	socket.emit('my event', {data: 'I\'m connected!'});
+			// });
+			// socket.on('my response', function(msg) {
+			// 	var dtao = JSON.parse(msg.data)
+			// 	this.setState({spots: dtao})
+			// 	console.log('called st state')
+			// 	//console.log(dtao)
+			// }.bind(this));
+			;
+		},
+		componentWillUnmount: function componentWillUnmount() {
+			console.log('yard unmountd');
+			sse.close();
 		},
 		render: function render() {
 			return React.createElement(
@@ -23936,25 +23892,224 @@
 				this.state.spots,
 				' ',
 				React.createElement('br', null),
+				React.createElement(Glom, { spots: this.state.spots.pond }),
 				React.createElement(Spots, { onWaiting: this.handleWaiting, spots: this.state.spots, onUserInput: this.handleUserInput })
 			);
 		}
 	});
 
+	var Glom = React.createClass({
+		displayName: 'Glom',
+
+		render: function render() {
+			return React.createElement(
+				'div',
+				null,
+				this.props.spots
+			);
+		}
+	});
+
 	module.exports = Yard;
-	//console.log(dtao)
+
+/***/ },
+/* 198 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _reactRouter = __webpack_require__(157);
+
+	var React = __webpack_require__(1);
+
+	var mStyle = {
+	  li: {
+	    display: 'inline',
+	    padding: '10px'
+	  },
+	  ul: {
+	    display: 'inline'
+	  }
+	};
+
+	var Main = React.createClass({
+	  displayName: 'Main',
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { style: mStyle.div },
+	      React.createElement(
+	        'span',
+	        null,
+	        ' Main Menu'
+	      ),
+	      React.createElement(
+	        'ul',
+	        null,
+	        React.createElement(
+	          'li',
+	          { style: mStyle.li },
+	          React.createElement(
+	            _reactRouter.Link,
+	            { to: '/home' },
+	            'home'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          { style: mStyle.li },
+	          React.createElement(
+	            _reactRouter.Link,
+	            { to: '/yard' },
+	            'yard'
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          { style: mStyle.li },
+	          React.createElement(
+	            _reactRouter.Link,
+	            { to: '/but' },
+	            'but'
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'container' },
+	        React.createElement(_reactRouter.RouteHandler, null)
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Main;
+
+/***/ },
+/* 199 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var Home = React.createClass({
+		displayName: 'Home',
+
+		componentDidMount: function componentDidMount() {},
+		render: function render() {
+			return React.createElement(
+				'div',
+				null,
+				'Home2'
+			);
+		}
+	});
+
+	module.exports = Home;
 
 /***/ },
 /* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// /lib contains the transpiled code. It's ignored by git but picked up by
-	// npm publish. See package.json's "prerelease" and "build" scripts
-	module.exports = __webpack_require__(201);
+	'use strict';
 
+	var React = __webpack_require__(1);
+	var imgUrl = 'img/loading.gif';
+	var sz = '60';
+	// var sbBut = {
+	// 	div: {
+	// 		float: 'right',
+	// 		borderRadius: '10',
+	// 		height: sz,
+	// 		width: sz,
+	// 		background: 'white',
+	// 		backgroundImage: 'url('+imgUrl+')',
+	// 		backgroundSize: sz
+	// 	},
+	//  	span: {
+	//  	  color: 'black',
+	// 	  position: 'relative',
+	// 	  left:'30%',
+	// 	  top:'30%'
+	//  	},
+	//  	span2: {
+	//  	  color: 'green',
+	// 	  position: 'relative',
+	// 	  left:'33%',
+	// 	  top:'3%'
+	//  	}
+	//  };
+
+	var But = new React.createClass({
+		getInitialState: function getInitialState() {
+			return {};
+		},
+		componentDidMount: function componentDidMount() {
+			return {};
+		},
+		sbBut: function sbBut() {
+			var ima = this.props.img;
+			var st = { sz: 60, left: '42%', top: '30%' };
+			return {
+				div: {
+					float: 'right',
+					borderRadius: '10',
+					height: st.sz,
+					width: st.sz,
+					background: 'white',
+					backgroundImage: 'url(' + ima + ')',
+					backgroundSize: st.sz
+				},
+				span: {
+					color: 'black',
+					position: 'relative',
+					left: st.left,
+					top: st.top
+				}
+			};
+		},
+		handleTimerButClick: function handleTimerButClick() {
+			if (this.props.img == 'img/loading60.gif' || this.props.img == 'img/loadno60.gif') {
+				console.log(this.props.tleft + ':  ' + this.props.img);
+				this.props.onButClick();
+			}
+		},
+		render: function render() {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'a',
+					{ onClick: this.handleTimerButClick },
+					React.createElement(
+						'div',
+						{ style: this.sbBut().div },
+						React.createElement(
+							'div',
+							{ style: this.sbBut().span },
+							this.props.tleft
+						)
+					)
+				)
+			);
+		}
+	});
+
+	module.exports = But;
 
 /***/ },
 /* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// /lib contains the transpiled code. It's ignored by git but picked up by
+	// npm publish. See package.json's "prerelease" and "build" scripts
+	module.exports = __webpack_require__(202);
+
+
+/***/ },
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
