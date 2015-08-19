@@ -1,14 +1,21 @@
 var React = require('react');
 import { RouteHandler, Link } from 'react-router';
-
+var imgurl = 'img/bkg-water.png'
 var mStyle = {
 	li: {
 		display: 'inline',
 		padding: '10px'
 	},
 	ul: {
-		display: 'inline'
-	}
+	},
+  span:{
+    color: 'yellow'
+  },
+  div: {
+    height: '900',
+    background: 'green',
+    backgroundImage: 'url('+imgurl+')'
+  }
 };
 
 
@@ -16,11 +23,10 @@ var Main = React.createClass({
   render: function(){
     return (
       <div style={mStyle.div}>
-        <span> Main Menu</span>
         <ul>
-        <li style={mStyle.li}><Link to="/home">home</Link></li>
-        <li style={mStyle.li}><Link to="/yard">yard</Link></li>
-        <li style={mStyle.li}><Link to="/but">but</Link></li>
+        <li style={mStyle.li}><Link to="/home"><span style={mStyle.span}> home</span></Link></li>
+        <li style={mStyle.li}><Link to="/yard"><span style={mStyle.span}> yard</span></Link></li>
+        <li style={mStyle.li}><Link to="/reg"><span style={mStyle.span}> regg</span></Link></li>
         </ul>
         <div className="container">
           <RouteHandler />

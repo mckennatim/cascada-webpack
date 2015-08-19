@@ -1,6 +1,7 @@
 var React = require('react');
 var RadioGroup = require('react-radio-group');
 var But = require('../components/But');
+//var Butt = require('../components/Butt');
 
 var url = '50.177.97.139';
 var port = '8088'
@@ -15,7 +16,7 @@ var Pond = new React.createClass({
 			//return{message: message, img: "img/Waterfall_off.gif"}
 			this.pime = {message: message, img: "img/Waterfall_off.gif"}
 			return this.pime
-		} else if (state=='timer'){
+		} else if (state=='timer'|state=='on'){
 			var message = this.props.spot.tleft + 1 + ' togo click Off'
 			//return{message: message, img: "img/Waterfall_on.gif"}
 			this.pime = {message: message, img: "img/Waterfall_on.gif"}
@@ -60,7 +61,7 @@ var Pond = new React.createClass({
 					</div>
 				</div>
 				<br/>
-				<input  type="range" min="0" max="120" step="1" value={this.state.value} onChange={this.handleChange}></input><br/>
+				<input  type="range" min="1" max="120" step="1" value={this.state.value} onChange={this.handleChange}></input><br/>
 			</div>
 		);
 	}
@@ -72,7 +73,8 @@ var Spot = new React.createClass({
 	waitSlide: false,
 	tval: -1,
 	getInitialState: function() {
-		return {value: 10, selectedValue: 'timed', img: 'img/loading60.gif', tval:6};
+		//return {value: 10, selectedValue: 'timed', img: 'img/loading60.gif', tval:6};
+		return {value: 10};
 	},
 	componentDidMount: function() {
 		//console.log(this.props.spot.tleft);
@@ -81,9 +83,7 @@ var Spot = new React.createClass({
 	handleRangeChange: function(event) {
 		this.waitSlide = true;
 		this.setState({value: event.target.value});
-		//console.log(event.target.value)
 		this.tval= event.target.value;
-		console.log(this.tval)
 	},
 	handleRadio: function(value){
 		//console.log(value)
@@ -91,27 +91,23 @@ var Spot = new React.createClass({
 		if (value=='on'){
 			this.props.onUserInput({spot: this.props.spot.spot, til: -1, state: 'on'});
 			this.waitSlide=false;
-			// this.rbut = value;
 		} else if(value=='off'){
 			this.props.onUserInput({spot: this.props.spot.spot, til: -1, state: 'off'});	
 			this.waitSlide=false;	
-			// this.rbut = value;
 		} else {
-			this.dealWithTimed()
+			this.rbut='timed';
+			this.waitSlide='true'
+			console.log(this.props.spot.tleft)
+			this.props.onUserInput({spot: this.props.spot.spot, til: 1, state: 'timer'});
+			console.log('dealin  w timed')
+			this.ima = {img:'img/loadno60.gif', clickable:true};			
 		}
 		this.setState({
-	      selectedValue: value, img: ima
+	      selectedValue: value//, img: ima
 	    });
 		
 	},
-	dealWithTimed: function(){
-		this.rbut='timed';
-		this.waitSlide='true'
-		console.log(this.props.spot.tleft)
-		this.props.onUserInput({spot: this.props.spot.spot, til: 1, state: 'timer'});
-		console.log('dealin  w timed')
-		this.ima = 'img/loadno60.gif';
-	},	
+	
 	radioLand: function(){ //fires whenever state changes
 		var state = this.props.spot.state;
 		var til = this.props.spot.tleft;
@@ -121,21 +117,21 @@ var Spot = new React.createClass({
 		} else if (state=='on'){
 			this.rbut='on'
 			tleft='';
-			this.ima= 'img/on100.gif'
+			this.ima= {img:'img/on100.gif', clickable:false}
 		} else if (state=='off'){
 			tleft='';
 			this.rbut='off';
-			this.ima= 'img/off100.gif'
+			this.ima= {img:'img/off100.gif', clickable:false}
 		} else if (state=='timer'){
 			console.log('state is time '+til)
 			tleft=til;
 			this.rbut='timed';
 			this.tval = til;
-			this.ima= 'img/loading60.gif'
+			this.ima= {img:'img/loading60.gif', clickable:true}
 		} else if (state=='waiting'){
 			console.log('radioland is waiting')
 			tleft='til';
-			this.ima = 'img/waiting.gif';
+			this.ima = {img:'img/waiting.gif', clickable:false};
 		}
 		this.waitSlde = false;
 		return{
@@ -173,10 +169,11 @@ var Spot = new React.createClass({
 						)}
 			        </RadioGroup>
 		        </div>
-		        <But img={this.radioLand().ima} tleft={this.tval} onButClick={this.handleTimerButClick}/>
+		        <But imginfo={this.radioLand().ima} message={this.tval} onButClick={this.handleTimerButClick}/>
+				<br/>
 				<div>
-					<br/><br/>
-					<input  type="range" min="0" max="120" step="1" value={this.state.value} onChange={this.handleRangeChange}></input>
+					<br/><br/><br/><br/>
+					<input  type="range" min="1" max="120" step="1" value={this.state.value} onChange={this.handleRangeChange}></input>
 				</div>
 				<br/>
 			</div>
@@ -209,16 +206,9 @@ var Spots = React.createClass({
 var socket, sse;
 
 var Yard = React.createClass({
-	mounted: false,
 	getInitialState: function() {
 		return {spots: {"pond": {"spot": "pond", "tleft": -99, "state": "waiting"}, "center": {"spot": "center", "tleft": -99, "state": "waiting"}, "bridge": {"spot": "bridge", "tleft": -99, "state": "waiting"}}};
 
-	},
-	handleWaiting: function(wspots){
-		console.log('mounted is '+this.mounted)
-		if (this.mounted){
-			this.setState({spots: wspots})
-		}
 	},
 	handleUserInput: function(timerSet){
 		var that=this;
@@ -230,7 +220,7 @@ var Yard = React.createClass({
 	},	
 	componentDidMount: function() {
 		console.log('yard mounted')
-		this.mounted=true;
+//		this.mounted=true;
 		var that = this;
 		$.get('http://'+url+':'+port+'/report/', function(data){
 			this.setState({spots: data.spots})
@@ -242,19 +232,6 @@ var Yard = React.createClass({
             console.log(sseData);
             this.setState({spots: sseData})
         }.bind(this)		
-
-		// var namespace = '/test'; 
-		// console.log(url)
-		// socket = io.connect('http://'+url+':'+port+namespace, {reconnect: false});
-		// socket.on('connect', function() {
-		// 	socket.emit('my event', {data: 'I\'m connected!'});
-		// });
-		// socket.on('my response', function(msg) {
-		// 	var dtao = JSON.parse(msg.data)
-		// 	this.setState({spots: dtao})
-		// 	console.log('called st state')
-		// 	//console.log(dtao)
-		// }.bind(this));
 	},
 	componentWillUnmount: function(){
 		console.log('yard unmountd')
@@ -262,20 +239,8 @@ var Yard = React.createClass({
 	},	
 	render: function(){
 		return (
-			<div id="bkg">hello react {this.state.spots} <br/>
-			<Glom spots={this.state.spots.pond}/>
-
-			<Spots onWaiting={this.handleWaiting} spots={this.state.spots} onUserInput={this.handleUserInput}/>
-			</div>
-			)
-	}
-})
-
-var Glom = React.createClass({
-	render: function(){
-		return(
-			<div>
-			{this.props.spots}
+			<div> 
+			<Spots spots={this.state.spots} onUserInput={this.handleUserInput}/>
 			</div>
 			)
 	}

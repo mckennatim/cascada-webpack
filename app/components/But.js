@@ -1,29 +1,4 @@
 var React = require('react');
-var imgUrl = 'img/loading.gif';
-var sz = '60';
-// var sbBut = {
-// 	div: {
-// 		float: 'right',
-// 		borderRadius: '10',
-// 		height: sz,
-// 		width: sz,
-// 		background: 'white',
-// 		backgroundImage: 'url('+imgUrl+')',
-// 		backgroundSize: sz
-// 	},
-//  	span: {
-//  	  color: 'black',
-// 	  position: 'relative',
-// 	  left:'30%',
-// 	  top:'30%'
-//  	},
-//  	span2: {
-//  	  color: 'green',
-// 	  position: 'relative',
-// 	  left:'33%',
-// 	  top:'3%'
-//  	}
-//  };
 
 var But = new React.createClass({
 	getInitialState: function(){
@@ -33,8 +8,12 @@ var But = new React.createClass({
 		return {}
 	},
 	sbBut: function(){
-		var ima = this.props.img;
+		var ima = this.props.imginfo.img;
 		var st = {sz:60, left:'42%', top:'30%'};
+		var bu = {bs: '', hover: {}};
+		if (this.props.imginfo.clickable){
+			bu.bs =  'inset 0px 1px 0px #3e9cbf, 0px 5px 0px 0px #205c73, 0px 10px 5px #999';
+		}
 		return {
 			div: {
 				float: 'right',
@@ -43,20 +22,27 @@ var But = new React.createClass({
 				width: st.sz,
 				background: 'white',
 				backgroundImage: 'url('+ima+')',
-				backgroundSize: st.sz
+				backgroundSize: st.sz,
+				boxShadow: bu.bs
+			},
+			li: {
+
 			},
 		 	span: {
 		 	  color: 'black',
 			  position: 'relative',
 			  left:st.left,
 			  top:st.top
+		 	},
+		 	a: {
 		 	}			
 		}
 
 	},
 	handleTimerButClick: function(){
-		if (this.props.img=='img/loading60.gif' || this.props.img=='img/loadno60.gif'){
-			console.log(this.props.tleft+':  '+this.props.img);
+		//if (this.props.imginfo.img=='img/loading60.gif' || this.props.imginfo.img=='img/loadno60.gif'){
+		if (this.props.imginfo.clickable){
+			console.log(this.props.message+':  '+this.props.imginfo.img);
 			this.props.onButClick();
 		}
 	
@@ -64,11 +50,12 @@ var But = new React.createClass({
 	render: function(){
 		return (
 			<div>
-			    <a onClick={this.handleTimerButClick}>
+			    <a style={this.sbBut().a} onClick={this.handleTimerButClick}>
 			      	<div style={this.sbBut().div} >
-			      		<div style={this.sbBut().span}>{this.props.tleft}</div> 
+			      		<div style={this.sbBut().span}>{this.props.message}</div> 
 				    </div>
-				</a>    
+				</a> 
+
 			</div>
 			)
 	}
