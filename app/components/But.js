@@ -8,31 +8,32 @@ var But = new React.createClass({
 		return {}
 	},
 	sbBut: function(){
-		var ima = this.props.imginfo.img;
-		var st = {sz:60, left:'42%', top:'30%'};
+		var ima = this.props.imginfo;
+		var imfo =this.props.imfo;
 		var bu = {bs: '', hover: {}};
 		if (this.props.imginfo.clickable){
 			bu.bs =  'inset 0px 1px 0px #3e9cbf, 0px 5px 0px 0px #205c73, 0px 10px 5px #999';
 		}
 		return {
 			div: {
+				cursor: 'pointer',
 				float: 'right',
 				borderRadius: '10',
-				height: st.sz,
-				width: st.sz,
+				height: imfo.sz,
+				width: imfo.sz,
 				background: 'white',
-				backgroundImage: 'url('+ima+')',
-				backgroundSize: st.sz,
+				backgroundImage: 'url('+ima.img+')',
+				backgroundSize: imfo.sz,
 				boxShadow: bu.bs
 			},
 			li: {
 
 			},
 		 	span: {
-		 	  color: 'black',
+		 	  color: imfo.txtColor,
 			  position: 'relative',
-			  left:st.left,
-			  top:st.top
+			  left:imfo.left,
+			  top:imfo.top
 		 	},
 		 	a: {
 		 	}			

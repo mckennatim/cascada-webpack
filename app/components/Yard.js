@@ -1,28 +1,31 @@
 var React = require('react');
 var RadioGroup = require('react-radio-group');
-var But = require('../components/But');
+var Butt = require('../components/Butt');
 //var Butt = require('../components/Butt');
 
 var url = '50.177.97.139';
 var port = '8088'
 
 var Pond = new React.createClass({
-	
+	imfo: {
+		but:{height:100, width:100, float:'left', marginLeft: 40, marginBottom: 20}, 
+		txt:{left:'3%', top:'3%', color: 'white', fontSize: '1.34em', margin: 6}
+	},	
 	turnwhat: function(){
 		var state = this.props.spot.state;
-		console.log('state is :'+state)
+		//console.log('state is :'+state)
 		if (state=='off'){
 			var message = 'turn ON for: '+ this.state.value + ' min';
 			//return{message: message, img: "img/Waterfall_off.gif"}
-			this.pime = {message: message, img: "img/Waterfall_off.gif"}
+			this.pime = {message: message, img: "img/Waterfall_off.gif", imginfo: {img:'img/waterfall_off.gif', clickable:true}}
 			return this.pime
 		} else if (state=='timer'|state=='on'){
 			var message = this.props.spot.tleft + 1 + ' togo click Off'
 			//return{message: message, img: "img/Waterfall_on.gif"}
-			this.pime = {message: message, img: "img/Waterfall_on.gif"}
+			this.pime = {message: message, img: "img/Waterfall_on.gif",imginfo: {img:'img/waterfall_on.gif', clickable:true}}
 			return this.pime;
 		} else if (state=='waiting'){
-			this.pime = {message: 'waiting', img: "img/waiting.gif"}
+			this.pime = {message: 'waiting', img: "img/waiting.gif", imginfo: {img:'img/waiting.gif', clickable:false}}
 			return this.pime;
 
 		}
@@ -53,13 +56,7 @@ var Pond = new React.createClass({
 		return (
 			<div> 
 				<h4 style={{color: "yellow"}}>pond</h4>
-				<div className="on-button">
-					<div className="button-big">
-						<a className="button-boost" onClick={this.handleClick}> <img id="ima" src={this.turnwhat().img} title="click to start waterfall"/>
-							<span>{this.turnwhat().message}</span>	
-						</a>
-					</div>
-				</div>
+				<Butt imginfo={this.turnwhat().imginfo} imfo={this.imfo} onButClick={this.handleClick}>{this.turnwhat().message} </Butt>
 				<br/>
 				<input  type="range" min="1" max="120" step="1" value={this.state.value} onChange={this.handleChange}></input><br/>
 			</div>
@@ -72,6 +69,10 @@ var Pond = new React.createClass({
 var Spot = new React.createClass({
 	waitSlide: false,
 	tval: -1,
+	imfo: {
+		but:{height:60, width:60}, 
+		txt:{left:'38%', top:'32%', color: 'black'}
+	},
 	getInitialState: function() {
 		//return {value: 10, selectedValue: 'timed', img: 'img/loading60.gif', tval:6};
 		return {value: 10};
@@ -87,7 +88,6 @@ var Spot = new React.createClass({
 	},
 	handleRadio: function(value){
 		//console.log(value)
-		var ima;
 		if (value=='on'){
 			this.props.onUserInput({spot: this.props.spot.spot, til: -1, state: 'on'});
 			this.waitSlide=false;
@@ -100,7 +100,9 @@ var Spot = new React.createClass({
 			console.log(this.props.spot.tleft)
 			this.props.onUserInput({spot: this.props.spot.spot, til: 1, state: 'timer'});
 			console.log('dealin  w timed')
-			this.ima = {img:'img/loadno60.gif', clickable:true};			
+			//this.ima = {img:'img/loadno60.gif', clickable:true};
+			this.ima.img = 'img/loadno60.gif';
+			this.ima.clickable = true;			
 		}
 		this.setState({
 	      selectedValue: value//, img: ima
@@ -111,7 +113,7 @@ var Spot = new React.createClass({
 	radioLand: function(){ //fires whenever state changes
 		var state = this.props.spot.state;
 		var til = this.props.spot.tleft;
-		var ima, tleft;
+		var tleft;
 		if (this.waitSlide){
 			tleft=til;
 		} else if (state=='on'){
@@ -123,7 +125,7 @@ var Spot = new React.createClass({
 			this.rbut='off';
 			this.ima= {img:'img/off100.gif', clickable:false}
 		} else if (state=='timer'){
-			console.log('state is time '+til)
+			//console.log('state is time '+til)
 			tleft=til;
 			this.rbut='timed';
 			this.tval = til;
@@ -143,7 +145,6 @@ var Spot = new React.createClass({
 		console.log('handle TimerBut clicked');
 		this.waitSlide=false;
 		var til = this.props.spot.tleft;
-		console.log('dog')
 		if (this.radioLand().rbut=='timed'){
 			console.log('image is timer')
 			this.props.onUserInput({spot: this.props.spot.spot, til: this.state.value, state: 'timer'});
@@ -169,7 +170,7 @@ var Spot = new React.createClass({
 						)}
 			        </RadioGroup>
 		        </div>
-		        <But imginfo={this.radioLand().ima} message={this.tval} onButClick={this.handleTimerButClick}/>
+		        <Butt imginfo={this.radioLand().ima} imfo={this.imfo} onButClick={this.handleTimerButClick}>{this.tval}</Butt>
 				<br/>
 				<div>
 					<br/><br/><br/><br/>

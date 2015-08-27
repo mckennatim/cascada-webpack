@@ -23553,10 +23553,10 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Main = __webpack_require__(201);
-	var Home = __webpack_require__(202);
+	var Main = __webpack_require__(198);
+	var Home = __webpack_require__(199);
 	var Yard = __webpack_require__(197);
-	var Reg = __webpack_require__(203);
+	var Reg = __webpack_require__(200);
 	var Router = __webpack_require__(157);
 	var DefaultRoute = Router.DefaultRoute;
 	var Route = Router.Route;
@@ -23577,30 +23577,33 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var RadioGroup = __webpack_require__(198);
-	var But = __webpack_require__(200);
+	var RadioGroup = __webpack_require__(218);
+	var Butt = __webpack_require__(202);
 	//var Butt = require('../components/Butt');
 
 	var url = '50.177.97.139';
 	var port = '8088';
 
 	var Pond = new React.createClass({
-
+		imfo: {
+			but: { height: 100, width: 100, float: 'left', marginLeft: 40, marginBottom: 20 },
+			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.34em', margin: 6 }
+		},
 		turnwhat: function turnwhat() {
 			var state = this.props.spot.state;
-			console.log('state is :' + state);
+			//console.log('state is :'+state)
 			if (state == 'off') {
 				var message = 'turn ON for: ' + this.state.value + ' min';
 				//return{message: message, img: "img/Waterfall_off.gif"}
-				this.pime = { message: message, img: 'img/Waterfall_off.gif' };
+				this.pime = { message: message, img: 'img/Waterfall_off.gif', imginfo: { img: 'img/waterfall_off.gif', clickable: true } };
 				return this.pime;
 			} else if (state == 'timer' | state == 'on') {
 				var message = this.props.spot.tleft + 1 + ' togo click Off';
 				//return{message: message, img: "img/Waterfall_on.gif"}
-				this.pime = { message: message, img: 'img/Waterfall_on.gif' };
+				this.pime = { message: message, img: 'img/Waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: true } };
 				return this.pime;
 			} else if (state == 'waiting') {
-				this.pime = { message: 'waiting', img: 'img/waiting.gif' };
+				this.pime = { message: 'waiting', img: 'img/waiting.gif', imginfo: { img: 'img/waiting.gif', clickable: false } };
 				return this.pime;
 			}
 		},
@@ -23635,23 +23638,10 @@
 					'pond'
 				),
 				React.createElement(
-					'div',
-					{ className: 'on-button' },
-					React.createElement(
-						'div',
-						{ className: 'button-big' },
-						React.createElement(
-							'a',
-							{ className: 'button-boost', onClick: this.handleClick },
-							' ',
-							React.createElement('img', { id: 'ima', src: this.turnwhat().img, title: 'click to start waterfall' }),
-							React.createElement(
-								'span',
-								null,
-								this.turnwhat().message
-							)
-						)
-					)
+					Butt,
+					{ imginfo: this.turnwhat().imginfo, imfo: this.imfo, onButClick: this.handleClick },
+					this.turnwhat().message,
+					' '
 				),
 				React.createElement('br', null),
 				React.createElement('input', { type: 'range', min: '1', max: '120', step: '1', value: this.state.value, onChange: this.handleChange }),
@@ -23664,6 +23654,10 @@
 	var Spot = new React.createClass({
 		waitSlide: false,
 		tval: -1,
+		imfo: {
+			but: { height: 60, width: 60 },
+			txt: { left: '38%', top: '32%', color: 'black' }
+		},
 		getInitialState: function getInitialState() {
 			//return {value: 10, selectedValue: 'timed', img: 'img/loading60.gif', tval:6};
 			return { value: 10 };
@@ -23679,7 +23673,6 @@
 		},
 		handleRadio: function handleRadio(value) {
 			//console.log(value)
-			var ima;
 			if (value == 'on') {
 				this.props.onUserInput({ spot: this.props.spot.spot, til: -1, state: 'on' });
 				this.waitSlide = false;
@@ -23692,7 +23685,9 @@
 				console.log(this.props.spot.tleft);
 				this.props.onUserInput({ spot: this.props.spot.spot, til: 1, state: 'timer' });
 				console.log('dealin  w timed');
-				this.ima = { img: 'img/loadno60.gif', clickable: true };
+				//this.ima = {img:'img/loadno60.gif', clickable:true};
+				this.ima.img = 'img/loadno60.gif';
+				this.ima.clickable = true;
 			}
 			this.setState({
 				selectedValue: value //, img: ima
@@ -23703,7 +23698,7 @@
 			//fires whenever state changes
 			var state = this.props.spot.state;
 			var til = this.props.spot.tleft;
-			var ima, tleft;
+			var tleft;
 			if (this.waitSlide) {
 				tleft = til;
 			} else if (state == 'on') {
@@ -23715,7 +23710,7 @@
 				this.rbut = 'off';
 				this.ima = { img: 'img/off100.gif', clickable: false };
 			} else if (state == 'timer') {
-				console.log('state is time ' + til);
+				//console.log('state is time '+til)
 				tleft = til;
 				this.rbut = 'timed';
 				this.tval = til;
@@ -23735,7 +23730,6 @@
 			console.log('handle TimerBut clicked');
 			this.waitSlide = false;
 			var til = this.props.spot.tleft;
-			console.log('dog');
 			if (this.radioLand().rbut == 'timed') {
 				console.log('image is timer');
 				this.props.onUserInput({ spot: this.props.spot.spot, til: this.state.value, state: 'timer' });
@@ -23787,7 +23781,11 @@
 						}
 					)
 				),
-				React.createElement(But, { imginfo: this.radioLand().ima, message: this.tval, onButClick: this.handleTimerButClick }),
+				React.createElement(
+					Butt,
+					{ imginfo: this.radioLand().ima, imfo: this.imfo, onButClick: this.handleTimerButClick },
+					this.tval
+				),
 				React.createElement('br', null),
 				React.createElement(
 					'div',
@@ -23879,151 +23877,6 @@
 /* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// /lib contains the transpiled code. It's ignored by git but picked up by
-	// npm publish. See package.json's "prerelease" and "build" scripts
-	module.exports = __webpack_require__(199);
-
-
-/***/ },
-/* 199 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, module, __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
-	    factory(exports, module, require('react'));
-	  } else {
-	    var mod = {
-	      exports: {}
-	    };
-	    factory(mod.exports, mod, global.React);
-	    global.RadioGroup = mod.exports;
-	  }
-	})(this, function (exports, module, _react) {
-	  'use strict';
-
-	  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	  var _React = _interopRequireDefault(_react);
-
-	  function radio(name, selectedValue, onChange) {
-	    return _React['default'].createClass({
-	      render: function render() {
-	        return _React['default'].createElement('input', _extends({}, this.props, {
-	          type: 'radio',
-	          name: name,
-	          checked: this.props.value === selectedValue,
-	          onChange: onChange.bind(null, this.props.value) }));
-	      }
-	    });
-	  }
-
-	  module.exports = _React['default'].createClass({
-	    displayName: 'index',
-
-	    propTypes: {
-	      name: _react.PropTypes.string,
-	      selectedValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number]),
-	      onChange: _react.PropTypes.func,
-	      children: _react.PropTypes.func
-	    },
-
-	    render: function render() {
-	      var _props = this.props;
-	      var name = _props.name;
-	      var selectedValue = _props.selectedValue;
-	      var onChange = _props.onChange;
-	      var children = _props.children;
-
-	      return _React['default'].createElement(
-	        'div',
-	        null,
-	        children && children(radio(name, selectedValue, onChange))
-	      );
-	    }
-	  });
-	});
-
-/***/ },
-/* 200 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-
-	var But = new React.createClass({
-		getInitialState: function getInitialState() {
-			return {};
-		},
-		componentDidMount: function componentDidMount() {
-			return {};
-		},
-		sbBut: function sbBut() {
-			var ima = this.props.imginfo.img;
-			var st = { sz: 60, left: '42%', top: '30%' };
-			var bu = { bs: '', hover: {} };
-			if (this.props.imginfo.clickable) {
-				bu.bs = 'inset 0px 1px 0px #3e9cbf, 0px 5px 0px 0px #205c73, 0px 10px 5px #999';
-			}
-			return {
-				div: {
-					float: 'right',
-					borderRadius: '10',
-					height: st.sz,
-					width: st.sz,
-					background: 'white',
-					backgroundImage: 'url(' + ima + ')',
-					backgroundSize: st.sz,
-					boxShadow: bu.bs
-				},
-				li: {},
-				span: {
-					color: 'black',
-					position: 'relative',
-					left: st.left,
-					top: st.top
-				},
-				a: {}
-			};
-		},
-		handleTimerButClick: function handleTimerButClick() {
-			//if (this.props.imginfo.img=='img/loading60.gif' || this.props.imginfo.img=='img/loadno60.gif'){
-			if (this.props.imginfo.clickable) {
-				console.log(this.props.message + ':  ' + this.props.imginfo.img);
-				this.props.onButClick();
-			}
-		},
-		render: function render() {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'a',
-					{ style: this.sbBut().a, onClick: this.handleTimerButClick },
-					React.createElement(
-						'div',
-						{ style: this.sbBut().div },
-						React.createElement(
-							'div',
-							{ style: this.sbBut().span },
-							this.props.message
-						)
-					)
-				)
-			);
-		}
-	});
-
-	module.exports = But;
-
-/***/ },
-/* 201 */
-/***/ function(module, exports, __webpack_require__) {
-
 	'use strict';
 
 	var _reactRouter = __webpack_require__(157);
@@ -24109,7 +23962,7 @@
 	module.exports = Main;
 
 /***/ },
-/* 202 */
+/* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24132,21 +23985,26 @@
 	module.exports = Home;
 
 /***/ },
-/* 203 */
+/* 200 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var But = __webpack_require__(200);
-	var Butt = __webpack_require__(204);
+	var But = __webpack_require__(201);
+	var Butt = __webpack_require__(202);
 
 	var Reg = React.createClass({
 		displayName: 'Reg',
 
 		componentDidMount: function componentDidMount() {},
-		imginfo: { img: 'img/Waterfall_on.gif', clickable: true, sz: 100 },
-		message: { txt: 'hello', txtColor: 'white' },
+		//imginfo: {img:'img/Waterfall_on.gif', clickable:true},
+		imginfo: { img: 'img/waterfall_on.gif', clickable: true },
+		message: { txt: 'turn ON for: 10 min' },
+		imfo: {
+			but: { height: 100, width: 100, float: 'right' },
+			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.34em', margin: 6 }
+		},
 		handleTimerButClick: function handleTimerButClick() {
 			console.log('handled in reg');
 		},
@@ -24154,13 +24012,12 @@
 			return React.createElement(
 				'div',
 				null,
-				'Reg',
 				React.createElement(
 					Butt,
-					{ kind: 'primary', imginfo: this.imginfo, message: this.messaage },
-					'Radium Button'
-				),
-				React.createElement(But, { imginfo: this.imginfo, message: this.message, onButClick: this.handleTimerButClick })
+					{ imginfo: this.imginfo, imfo: this.imfo, onButClick: this.handleTimerButClick },
+					this.message.txt,
+					' '
+				)
 			);
 		}
 	});
@@ -24168,7 +24025,81 @@
 	module.exports = Reg;
 
 /***/ },
-/* 204 */
+/* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var But = new React.createClass({
+		getInitialState: function getInitialState() {
+			return {};
+		},
+		componentDidMount: function componentDidMount() {
+			return {};
+		},
+		sbBut: function sbBut() {
+			var ima = this.props.imginfo;
+			var imfo = this.props.imfo;
+			var bu = { bs: '', hover: {} };
+			if (this.props.imginfo.clickable) {
+				bu.bs = 'inset 0px 1px 0px #3e9cbf, 0px 5px 0px 0px #205c73, 0px 10px 5px #999';
+			}
+			return {
+				div: {
+					cursor: 'pointer',
+					float: 'right',
+					borderRadius: '10',
+					height: imfo.sz,
+					width: imfo.sz,
+					background: 'white',
+					backgroundImage: 'url(' + ima.img + ')',
+					backgroundSize: imfo.sz,
+					boxShadow: bu.bs
+				},
+				li: {},
+				span: {
+					color: imfo.txtColor,
+					position: 'relative',
+					left: imfo.left,
+					top: imfo.top
+				},
+				a: {}
+			};
+		},
+		handleTimerButClick: function handleTimerButClick() {
+			//if (this.props.imginfo.img=='img/loading60.gif' || this.props.imginfo.img=='img/loadno60.gif'){
+			if (this.props.imginfo.clickable) {
+				console.log(this.props.message + ':  ' + this.props.imginfo.img);
+				this.props.onButClick();
+			}
+		},
+		render: function render() {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'a',
+					{ style: this.sbBut().a, onClick: this.handleTimerButClick },
+					React.createElement(
+						'div',
+						{ style: this.sbBut().div },
+						React.createElement(
+							'div',
+							{ style: this.sbBut().span },
+							this.props.message
+						)
+					)
+				)
+			);
+		}
+	});
+
+	module.exports = But;
+
+/***/ },
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24181,14 +24112,22 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var Radium = __webpack_require__(205);
+	var Radium = __webpack_require__(203);
 	var React = __webpack_require__(1);
 
 	var Butt = (function (_React$Component) {
 		function Butt() {
 			_classCallCheck(this, _Butt);
 
-			_get(Object.getPrototypeOf(_Butt.prototype), 'constructor', this).apply(this, arguments);
+			_get(Object.getPrototypeOf(_Butt.prototype), 'constructor', this).call(this);
+			this.state = { txt: {}, but: { color: 'orange' }, abut: { color: 'yellow' }, bs: { boxShadow: '' } };
+			this.handleTouchStartA = this.handleTouchStartA.bind(this);
+			this.handleTouchEndA = this.handleTouchEndA.bind(this);
+			this.handleTimerButClick = this.handleTimerButClick.bind(this);
+			this.extendProps = this.extendProps.bind(this);
+			this.componentDidMount = this.componentDidMount.bind(this);
+			this.animal = 'dog';
+			this.pr = { but: {} };
 		}
 
 		_inherits(Butt, _React$Component);
@@ -24196,67 +24135,99 @@
 		var _Butt = Butt;
 
 		_createClass(_Butt, [{
+			key: 'componentDidMount',
+			value: function componentDidMount() {
+				this.extendProps();
+			}
+		}, {
+			key: 'handleTouchStartA',
+			value: function handleTouchStartA() {
+				this.setState({ txt: { color: 'red' }, abut: { position: 'relative', bottom: 6, left: '3%' } });
+			}
+		}, {
+			key: 'handleTouchEndA',
+			value: function handleTouchEndA() {
+				var oldcol = this.props.imfo.txt.color;
+				this.setState({ txt: { color: oldcol }, abut: { position: 'relative', bottom: 0, left: '0%' } });
+			}
+		}, {
+			key: 'handleTimerButClick',
+			value: function handleTimerButClick() {
+				console.log('Radium handleButClicked and is ' + this.props.imginfo.clickable);
+				if (this.props.imginfo.clickable) {
+					console.log(this.props.children + ':  ' + this.props.imginfo.img);
+
+					this.props.onButClick();
+				} else {}
+			}
+		}, {
+			key: 'extendProps',
+			value: function extendProps() {
+				var but = this.props.imfo.but;
+				var height = but.height;
+				var width = but.width;
+				var backgroundSize = width + 'px ' + height + 'px';
+				but.backgroundSize = backgroundSize;
+				this.setState({ but: but });
+			}
+		}, {
 			key: 'sbBut',
 			value: function sbBut() {
-				var ima = this.props.imginfo.img;
-				var st = { sz: 60, left: '42%', top: '30%' };
-				var bu = { bs: '', hover: {} };
-				if (this.props.imginfo.clickable) {
+				//console.log(this.props.imginfo)
+				var ima = this.props.imginfo;
+				var bu = { bs: '', as: {} };
+				if (ima.clickable) {
 					bu.bs = 'inset 0px 1px 0px #3e9cbf, 0px 5px 0px 0px #205c73, 0px 10px 5px #999';
+					bu.as = { position: 'relative', top: -6, right: 6 };
+				} else {
+					bu.bs = 'inset 0px 0px 0px green, 0px 0px 0px 0px yellow, 0px 0px 0px blue';
+					bu.as = { position: 'relative', top: 0, right: '0%' };
 				}
 				return {
-					div: {
-						float: 'right',
-						borderRadius: '10',
-						height: st.sz,
-						width: st.sz,
-						background: 'white',
-						backgroundImage: 'url(' + ima + ')',
-						backgroundSize: st.sz,
-						boxShadow: bu.bs
-					},
-					li: {},
-					span: {
-						color: 'black',
-						position: 'relative',
-						left: st.left,
-						top: st.top
-					},
-					a: {}
+					def: {
+						but: {
+							cursor: 'pointer',
+							float: 'right',
+							borderRadius: '10',
+							height: 60,
+							width: 60,
+							backgroundColor: 'white',
+							backgroundImage: 'url(' + ima.img + ')',
+							backgroundSize: '60px 60px',
+							backgroundRepeat: 'no-repeat',
+							boxShadow: bu.bs,
+							':active': bu.as
+						},
+						txt: {
+							color: 'black',
+							position: 'relative',
+							left: '38%',
+							top: '32%'
+						}
+					}
 				};
 			}
 		}, {
 			key: 'render',
 			value: function render() {
-				// Radium extends the style attribute to accept an array. It will merge
-				// the styles in order. We use this feature here to apply the primary
-				// or warning styles depending on the value of the `kind` prop. Since its
-				// all just JavaScript, you can use whatever logic you want to decide which
-				// styles are applied (props, state, context, etc).
 				return React.createElement(
 					'div',
 					null,
 					React.createElement(
-						'button',
-						{
-							key: 'button',
-							style: [styles.base, this.sbBut().div] },
-						this.props.children
-					),
-					Radium.getState(this.state, 'button', ':hover') ? React.createElement(
-						'span',
-						null,
-						' ',
-						'Hovering!'
-					) : null
+						'a',
+						{ ontouchstart: '', onClick: this.handleTimerButClick, onTouchStart: this.handleTouchStartA, onTouchEnd: this.handleTouchEndA },
+						React.createElement(
+							'div',
+							{ key: 'but', style: [this.sbBut().def.but, this.state.abut, this.state.but] },
+							React.createElement(
+								'div',
+								{ key: 'txt', style: [this.sbBut().def.txt, this.props.imfo.txt, this.state.txt] },
+								this.props.children
+							)
+						)
+					)
 				);
 			}
-		}], [{
-			key: 'propTypes',
-			value: {
-				kind: React.PropTypes.oneOf(['primary', 'warning']).isRequired
-			},
-			enumerable: true
 		}]);
 
 		Butt = Radium(Butt) || Butt;
@@ -24264,56 +24235,35 @@
 	})(React.Component);
 
 	;
-	//Butt=Radium(Butt)
-
-	// You can create your style objects dynamically or share them for
-	// every instance of the component.
-	var styles = {
-		base: {
-			color: '#fff',
-
-			// Adding interactive state couldn't be easier! Add a special key to your
-			// style object (:hover, :focus, :active, or @media) with the additional rules.
-			':hover': {}
-		},
-
-		primary: {
-			background: '#0074D9'
-		},
-
-		warning: {
-			background: '#FF4136'
-		}
-	};
 
 	module.exports = Butt;
 
 /***/ },
-/* 205 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Enhancer = __webpack_require__(208);
+	var Enhancer = __webpack_require__(206);
 
 	module.exports = function (ComposedComponent) {
 	  return Enhancer(ComposedComponent);
 	};
-	module.exports.Style = __webpack_require__(216);
-	module.exports.PrintStyleSheet = __webpack_require__(218);
-	module.exports.getState = __webpack_require__(206);
-	module.exports.keyframes = __webpack_require__(219);
-	module.exports.Config = __webpack_require__(214);
+	module.exports.Style = __webpack_require__(214);
+	module.exports.PrintStyleSheet = __webpack_require__(216);
+	module.exports.getState = __webpack_require__(204);
+	module.exports.keyframes = __webpack_require__(217);
+	module.exports.Config = __webpack_require__(212);
 
 /***/ },
-/* 206 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
 
 	'use strict';
 
-	var getStateKey = __webpack_require__(207);
+	var getStateKey = __webpack_require__(205);
 
 	var VALID_KEYS = [':active', ':focus', ':hover'];
 
@@ -24330,7 +24280,7 @@
 	module.exports = getState;
 
 /***/ },
-/* 207 */
+/* 205 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -24344,7 +24294,7 @@
 	module.exports = getStateKey;
 
 /***/ },
-/* 208 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/* @flow */
@@ -24359,8 +24309,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var resolveStyles = __webpack_require__(209);
-	var printStyles = __webpack_require__(215);
+	var resolveStyles = __webpack_require__(207);
+	var printStyles = __webpack_require__(213);
 
 	var enhanceWithRadium = function enhanceWithRadium(ComposedComponent) {
 	  var RadiumEnhancer = (function (_ComposedComponent) {
@@ -24441,7 +24391,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 209 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/* @flow */
@@ -24450,13 +24400,13 @@
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var MouseUpListener = __webpack_require__(210);
-	var getState = __webpack_require__(206);
-	var getStateKey = __webpack_require__(207);
-	var Prefixer = __webpack_require__(211);
-	var Config = __webpack_require__(214);
+	var MouseUpListener = __webpack_require__(208);
+	var getState = __webpack_require__(204);
+	var getStateKey = __webpack_require__(205);
+	var Prefixer = __webpack_require__(209);
+	var Config = __webpack_require__(212);
 
-	var ExecutionEnvironment = __webpack_require__(212);
+	var ExecutionEnvironment = __webpack_require__(210);
 	var React = __webpack_require__(1);
 
 	// babel-eslint 3.1.7 fails here for some reason, error:
@@ -24817,7 +24767,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 210 */
+/* 208 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -24861,7 +24811,7 @@
 	};
 
 /***/ },
-/* 211 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -24871,8 +24821,8 @@
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(212);
-	var arrayFind = __webpack_require__(213);
+	var ExecutionEnvironment = __webpack_require__(210);
+	var arrayFind = __webpack_require__(211);
 
 	var VENDOR_PREFIX_REGEX = /-(moz|webkit|ms|o)-/;
 
@@ -25283,7 +25233,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 212 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -25328,7 +25278,7 @@
 
 
 /***/ },
-/* 213 */
+/* 211 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -25357,14 +25307,14 @@
 
 
 /***/ },
-/* 214 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(212);
+	var ExecutionEnvironment = __webpack_require__(210);
 
 	var _matchMediaFunction = ExecutionEnvironment.canUseDOM && window && window.matchMedia && function (mediaQueryString) {
 	  return window.matchMedia(mediaQueryString);
@@ -25385,7 +25335,7 @@
 	};
 
 /***/ },
-/* 215 */
+/* 213 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -25463,13 +25413,13 @@
 	};
 
 /***/ },
-/* 216 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var createMarkupForStyles = __webpack_require__(217);
-	var Prefixer = __webpack_require__(211);
+	var createMarkupForStyles = __webpack_require__(215);
+	var Prefixer = __webpack_require__(209);
 
 	var React = __webpack_require__(1);
 
@@ -25554,7 +25504,7 @@
 	module.exports = Style;
 
 /***/ },
-/* 217 */
+/* 215 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -25571,15 +25521,15 @@
 	module.exports = createMarkupForStyles;
 
 /***/ },
-/* 218 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
 
-	var Style = __webpack_require__(216);
-	var printStyles = __webpack_require__(215);
+	var Style = __webpack_require__(214);
+	var printStyles = __webpack_require__(213);
 
 	var PrintStyle = React.createClass({
 	  displayName: 'PrintStyle',
@@ -25618,17 +25568,17 @@
 	module.exports = PrintStyle;
 
 /***/ },
-/* 219 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
 
 	'use strict';
 
-	var createMarkupForStyles = __webpack_require__(217);
-	var Prefixer = __webpack_require__(211);
+	var createMarkupForStyles = __webpack_require__(215);
+	var Prefixer = __webpack_require__(209);
 
-	var ExecutionEnvironment = __webpack_require__(212);
+	var ExecutionEnvironment = __webpack_require__(210);
 
 	var isAnimationSupported = ExecutionEnvironment.canUseDOM && Prefixer.getPrefixedPropertyName('animation') !== false;
 
@@ -25675,6 +25625,78 @@
 	};
 
 	module.exports = keyframes;
+
+/***/ },
+/* 218 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// /lib contains the transpiled code. It's ignored by git but picked up by
+	// npm publish. See package.json's "prerelease" and "build" scripts
+	module.exports = __webpack_require__(219);
+
+
+/***/ },
+/* 219 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, module, __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
+	    factory(exports, module, require('react'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, mod, global.React);
+	    global.RadioGroup = mod.exports;
+	  }
+	})(this, function (exports, module, _react) {
+	  'use strict';
+
+	  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	  var _React = _interopRequireDefault(_react);
+
+	  function radio(name, selectedValue, onChange) {
+	    return _React['default'].createClass({
+	      render: function render() {
+	        return _React['default'].createElement('input', _extends({}, this.props, {
+	          type: 'radio',
+	          name: name,
+	          checked: this.props.value === selectedValue,
+	          onChange: onChange.bind(null, this.props.value) }));
+	      }
+	    });
+	  }
+
+	  module.exports = _React['default'].createClass({
+	    displayName: 'index',
+
+	    propTypes: {
+	      name: _react.PropTypes.string,
+	      selectedValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number]),
+	      onChange: _react.PropTypes.func,
+	      children: _react.PropTypes.func
+	    },
+
+	    render: function render() {
+	      var _props = this.props;
+	      var name = _props.name;
+	      var selectedValue = _props.selectedValue;
+	      var onChange = _props.onChange;
+	      var children = _props.children;
+
+	      return _React['default'].createElement(
+	        'div',
+	        null,
+	        children && children(radio(name, selectedValue, onChange))
+	      );
+	    }
+	  });
+	});
 
 /***/ }
 /******/ ]);

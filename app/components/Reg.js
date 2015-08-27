@@ -5,17 +5,20 @@ var Butt = require('../components/Butt');
 var Reg = React.createClass({
 	componentDidMount: function() {	
 	},
-	imginfo: {img:'img/Waterfall_on.gif', clickable:true, sz:100},
-	message: {txt:'hello', txtColor:'white'},
+	//imginfo: {img:'img/Waterfall_on.gif', clickable:true},
+	imginfo: {img:'img/waterfall_on.gif', clickable:true},
+	message: {txt:'turn ON for: 10 min'},
+	imfo: {
+		but:{height:100, width:100, float:'right'}, 
+		txt:{left:'3%', top:'3%', color: 'white', fontSize: '1.34em', margin: 6}
+	},
 	handleTimerButClick: function(){
 		console.log('handled in reg')
 	},
 	render: function(){
 		return (
 			<div>
-			Reg
-			<Butt kind="primary" imginfo={this.imginfo} message={this.messaage}>Radium Button</Butt>
-			<But imginfo={this.imginfo} message={this.message} onButClick={this.handleTimerButClick}/>
+			<Butt imginfo={this.imginfo} imfo={this.imfo} onButClick={this.handleTimerButClick}>{this.message.txt} </Butt>
 			</div>
 			)
 	}

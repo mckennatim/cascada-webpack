@@ -3,86 +3,106 @@ var React = require('react');
 
 @Radium
 class Butt extends React.Component{
-	static propTypes = {
-		kind: React.PropTypes.oneOf(['primary', 'warning']).isRequired
+	constructor(){
+		super();
+		this.state = {txt:{}, but:{color:'orange'}, abut:{color:'yellow'}, bs:{boxShadow:''}};
+		this.handleTouchStartA = this.handleTouchStartA.bind(this);
+		this.handleTouchEndA = this.handleTouchEndA.bind(this);
+		this.handleTimerButClick = this.handleTimerButClick.bind(this);
+		this.extendProps = this.extendProps.bind(this);
+		this.componentDidMount = this.componentDidMount.bind(this);
+		this.animal = 'dog';
+		this.pr = {but:{}};
 	};
-	sbBut() {
-		var ima = this.props.imginfo.img;
-		var st = {sz:60, left:'42%', top:'30%'};
-		var bu = {bs: '', hover: {}};
+	componentDidMount() {
+		this.extendProps();
+
+	};
+	handleTouchStartA() {
+		this.setState({txt: {color:'red'}, abut: {position: 'relative', bottom: 6, left: '3%' }})
+
+	};
+	handleTouchEndA() {
+		var oldcol= this.props.imfo.txt.color
+		this.setState({txt: {color: oldcol}, abut: {position: 'relative', bottom: 0, left: '0%' }})
+
+	};
+	handleTimerButClick() {
+		console.log('Radium handleButClicked and is '+this.props.imginfo.clickable )
 		if (this.props.imginfo.clickable){
-			bu.bs =  'inset 0px 1px 0px #3e9cbf, 0px 5px 0px 0px #205c73, 0px 10px 5px #999';
+			console.log(this.props.children+':  '+this.props.imginfo.img);
+
+			this.props.onButClick();
+		}else {
+		}		
+	};
+	extendProps(){
+		var but = this.props.imfo.but;
+		var height = but.height;
+		var width = but.width;
+		var backgroundSize = width+'px '+height+'px';
+		but.backgroundSize= backgroundSize;
+		this.setState({but:but})
+	}
+	sbBut() {
+		//console.log(this.props.imginfo)
+		var ima = this.props.imginfo;
+		var bu = {bs: '', as:{}};
+		if (ima.clickable){
+			bu.bs='inset 0px 1px 0px #3e9cbf, 0px 5px 0px 0px #205c73, 0px 10px 5px #999';
+			bu.as = {position: 'relative', top: -6, right: 6 };
+		} else {
+			bu.bs= 'inset 0px 0px 0px green, 0px 0px 0px 0px yellow, 0px 0px 0px blue';
+			bu.as =  {position: 'relative', top: 0, right: '0%' };
 		}
 		return {
-			div: {
-				float: 'right',
-				borderRadius: '10',
-				height: st.sz,
-				width: st.sz,
-				background: 'white',
-				backgroundImage: 'url('+ima+')',
-				backgroundSize: st.sz,
-				boxShadow: bu.bs
-			},
-			li: {
-
-			},
-		 	span: {
-		 	  color: 'black',
-			  position: 'relative',
-			  left:st.left,
-			  top:st.top
-		 	},
-		 	a: {
-		 	}			
+			def: {
+				but: {
+					cursor: 'pointer',
+					float: 'right',
+					borderRadius: '10',
+					height: 60,
+					width: 60,
+					backgroundColor: 'white',
+					backgroundImage: 'url('+ima.img+')',
+					backgroundSize: '60px 60px', 
+					backgroundRepeat: 'no-repeat',
+					boxShadow: bu.bs,
+					':active': bu.as
+				},
+			 	txt: {
+			 	  color: 'black',
+				  position: 'relative',
+				  left: '38%',
+				  top: '32%'
+			 	}
+			 }
 		}
 
 	};
 	render() {
-		// Radium extends the style attribute to accept an array. It will merge
-		// the styles in order. We use this feature here to apply the primary
-		// or warning styles depending on the value of the `kind` prop. Since its
-		// all just JavaScript, you can use whatever logic you want to decide which
-		// styles are applied (props, state, context, etc).
 		return (
+
 			<div>
-			<button
-			key="button"
-			style={[
-				styles.base,
-				this.sbBut().div
-				]}>
-				{this.props.children}
-				
-			</button>
-			{Radium.getState(this.state, 'button', ':hover') ? (
-          		<span>{' '}Hovering!</span>
-        		) : null}
+			<a ontouchstart="" onClick={this.handleTimerButClick} onTouchStart={this.handleTouchStartA} onTouchEnd={this.handleTouchEndA}>
+		      	<div key="but" style={[
+		      		this.sbBut().def.but,
+		      		this.state.abut,
+		      		this.state.but
+		      		]} >
+		      		<div key="txt" style={[
+		      			this.sbBut().def.txt,
+		      			this.props.imfo.txt,
+		      			this.state.txt
+		      			]}>
+		      			{this.props.children}</div> 
+			    </div>
+			</a>
+
 			</div>
 		);
 	}
 };
-//Butt=Radium(Butt)
 
-// You can create your style objects dynamically or share them for
-// every instance of the component.
-var styles = {
-  base: {
-    color: '#fff',
-
-    // Adding interactive state couldn't be easier! Add a special key to your
-    // style object (:hover, :focus, :active, or @media) with the additional rules.
-    ':hover': {
-    }
-  },
-
-  primary: {
-    background: '#0074D9'
-  },
-
-  warning: {
-    background: '#FF4136'
-  }
-};
 
 module.exports = Butt;
