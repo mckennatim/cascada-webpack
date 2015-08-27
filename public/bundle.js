@@ -23586,8 +23586,8 @@
 
 	var Pond = new React.createClass({
 		imfo: {
-			but: { height: 100, width: 100, float: 'left', marginLeft: 40, marginBottom: 20 },
-			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.34em', margin: 6 }
+			but: { height: 110, width: 110, float: 'left', marginLeft: 40, marginBottom: 20 },
+			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.34em', margin: 6, textShadow: '2px 2px blue' }
 		},
 		turnwhat: function turnwhat() {
 			var state = this.props.spot.state;
@@ -23598,7 +23598,7 @@
 				this.pime = { message: message, img: 'img/Waterfall_off.gif', imginfo: { img: 'img/waterfall_off.gif', clickable: true } };
 				return this.pime;
 			} else if (state == 'timer' | state == 'on') {
-				var message = this.props.spot.tleft + 1 + ' togo click Off';
+				var message = this.props.spot.tleft + 1 + ' to go click Off';
 				//return{message: message, img: "img/Waterfall_on.gif"}
 				this.pime = { message: message, img: 'img/Waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: true } };
 				return this.pime;
@@ -23656,7 +23656,7 @@
 		tval: -1,
 		imfo: {
 			but: { height: 60, width: 60 },
-			txt: { left: '38%', top: '32%', color: 'black' }
+			txt: { left: '34%', top: '28%', color: 'green', fontWeight: 'bold', fontSize: '1.2em', fontFamily: '"Comic Sans MS", cursive, sans-serif' }
 		},
 		getInitialState: function getInitialState() {
 			//return {value: 10, selectedValue: 'timed', img: 'img/loading60.gif', tval:6};
@@ -23698,31 +23698,26 @@
 			//fires whenever state changes
 			var state = this.props.spot.state;
 			var til = this.props.spot.tleft;
-			var tleft;
-			if (this.waitSlide) {
-				tleft = til;
-			} else if (state == 'on') {
+			if (this.waitSlide) {} else if (state == 'on') {
 				this.rbut = 'on';
-				tleft = '';
+				this.tval = '';
 				this.ima = { img: 'img/on100.gif', clickable: false };
 			} else if (state == 'off') {
-				tleft = '';
 				this.rbut = 'off';
+				this.tval = '';
 				this.ima = { img: 'img/off100.gif', clickable: false };
 			} else if (state == 'timer') {
-				//console.log('state is time '+til)
-				tleft = til;
 				this.rbut = 'timed';
 				this.tval = til;
 				this.ima = { img: 'img/loading60.gif', clickable: true };
 			} else if (state == 'waiting') {
 				console.log('radioland is waiting');
-				tleft = 'til';
+				this.tval = '';
 				this.ima = { img: 'img/waiting.gif', clickable: false };
 			}
 			this.waitSlde = false;
 			return {
-				ima: this.ima, tleft: tleft, rbut: this.rbut
+				ima: this.ima, rbut: this.rbut
 			};
 		},
 
