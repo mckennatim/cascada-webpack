@@ -6,7 +6,7 @@ var Reg = React.createClass({
 	componentDidMount: function() {	
 	},
 	//imginfo: {img:'img/Waterfall_on.gif', clickable:t   rue},
-	imginfo: {img:'img/Waterfall_on.gif', clickable:true},
+	imginfo: {img:'img/waterfall_on.gif', clickable:true},
 	message: {con:'get token', discon: 'delete token'},
 	imfo: {
 		but:{height:100, width:100, float:'right'}, 

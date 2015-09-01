@@ -23610,12 +23610,12 @@
 				if (auth) {
 					var message = this.props.spot.tleft + 1 + ' to go click Off';
 					//return{message: message, img: "img/Waterfall_on.gif"}
-					this.pime = { message: message, img: 'img/Waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: true } };
+					this.pime = { message: message, img: 'img/waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: true } };
 					return this.pime;
 				} else {
 					var message = this.props.spot.tleft + 1 + ' to go';
 					//return{message: message, img: "img/Waterfall_on.gif"}
-					this.pime = { message: message, img: 'img/Waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: false } };
+					this.pime = { message: message, img: 'img/waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: false } };
 					return this.pime;
 				}
 			} else if (state == 'waiting') {
@@ -24063,7 +24063,7 @@
 
 		componentDidMount: function componentDidMount() {},
 		//imginfo: {img:'img/Waterfall_on.gif', clickable:t   rue},
-		imginfo: { img: 'img/Waterfall_on.gif', clickable: true },
+		imginfo: { img: 'img/waterfall_on.gif', clickable: true },
 		message: { con: 'get token', discon: 'delete token' },
 		imfo: {
 			but: { height: 100, width: 100, float: 'right' },
