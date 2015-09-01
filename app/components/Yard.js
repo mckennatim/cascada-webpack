@@ -20,12 +20,12 @@ var Pond = new React.createClass({
 			if(auth){
 				var message = 'turn ON for: '+ this.state.value + ' min';
 				//return{message: message, img: "img/Waterfall_off.gif"}
-				this.pime = {message: message, img: "img/Waterfall_off.gif", imginfo: {img:'img/waterfall_off.gif', clickable:true}}
+				this.pime = {message: message, img: "img/waterfall_off.gif", imginfo: {img:'img/waterfall_off.gif', clickable:true}}
 				return this.pime
 			} else{
 				var message = 'registed users can control water';
 				//return{message: message, img: "img/Waterfall_off.gif"}
-				this.pime = {message: message, img: "img/Waterfall_off.gif", imginfo: {img:'img/waterfall_off.gif', clickable:false}}
+				this.pime = {message: message, img: "img/waterfall_off.gif", imginfo: {img:'img/waterfall_off.gif', clickable:false}}
 				return this.pime				
 			}
 		} else if (state=='timer'|state=='on'){
