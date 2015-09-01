@@ -1,4 +1,5 @@
 var React = require('react');
+var Navigation = require('react-router').Navigation;
 var RadioGroup = require('react-radio-group');
 var Butt = require('../components/Butt');
 //var Butt = require('../components/Butt');
@@ -9,21 +10,37 @@ var port = '8088'
 var Pond = new React.createClass({
 	imfo: {
 		but:{height:110, width:110, float:'left', marginLeft: 40, marginBottom: 20}, 
-		txt:{left:'3%', top:'3%', color: 'white', fontSize: '1.34em', margin: 6, textShadow: '2px 2px blue'}
+		txt:{left:'3%', top:'3%', color: 'white', fontSize: '1.2em', margin: 6, textShadow: '2px 2px blue'}
 	},	
 	turnwhat: function(){
+		var auth = this.props.auth;
 		var state = this.props.spot.state;
 		//console.log('state is :'+state)
 		if (state=='off'){
-			var message = 'turn ON for: '+ this.state.value + ' min';
-			//return{message: message, img: "img/Waterfall_off.gif"}
-			this.pime = {message: message, img: "img/Waterfall_off.gif", imginfo: {img:'img/waterfall_off.gif', clickable:true}}
-			return this.pime
+			if(auth){
+				var message = 'turn ON for: '+ this.state.value + ' min';
+				//return{message: message, img: "img/Waterfall_off.gif"}
+				this.pime = {message: message, img: "img/Waterfall_off.gif", imginfo: {img:'img/waterfall_off.gif', clickable:true}}
+				return this.pime
+			} else{
+				var message = 'registed users can control water';
+				//return{message: message, img: "img/Waterfall_off.gif"}
+				this.pime = {message: message, img: "img/Waterfall_off.gif", imginfo: {img:'img/waterfall_off.gif', clickable:false}}
+				return this.pime				
+			}
 		} else if (state=='timer'|state=='on'){
-			var message = this.props.spot.tleft + 1 + ' to go click Off'
-			//return{message: message, img: "img/Waterfall_on.gif"}
-			this.pime = {message: message, img: "img/Waterfall_on.gif",imginfo: {img:'img/waterfall_on.gif', clickable:true}}
-			return this.pime;
+			if(auth){
+				var message = this.props.spot.tleft + 1 + ' to go click Off'
+				//return{message: message, img: "img/Waterfall_on.gif"}
+				this.pime = {message: message, img: "img/Waterfall_on.gif",imginfo: {img:'img/waterfall_on.gif', clickable:true}}
+				return this.pime;				
+			} else{
+				var message = this.props.spot.tleft + 1 + ' to go'
+				//return{message: message, img: "img/Waterfall_on.gif"}
+				this.pime = {message: message, img: "img/Waterfall_on.gif",imginfo: {img:'img/waterfall_on.gif', clickable:false}}
+				return this.pime;
+			}
+
 		} else if (state=='waiting'){
 			this.pime = {message: 'waiting', img: "img/waiting.gif", imginfo: {img:'img/waiting.gif', clickable:false}}
 			return this.pime;
@@ -88,28 +105,28 @@ var Spot = new React.createClass({
 	},
 	handleRadio: function(value){
 		//console.log(value)
-		if (value=='on'){
-			this.props.onUserInput({spot: this.props.spot.spot, til: -1, state: 'on'});
-			this.waitSlide=false;
-		} else if(value=='off'){
-			this.props.onUserInput({spot: this.props.spot.spot, til: -1, state: 'off'});	
-			this.waitSlide=false;	
-		} else {
-			this.rbut='timed';
-			this.waitSlide='true'
-			console.log(this.props.spot.tleft)
-			this.props.onUserInput({spot: this.props.spot.spot, til: 1, state: 'timer'});
-			console.log('dealin  w timed')
-			//this.ima = {img:'img/loadno60.gif', clickable:true};
-			this.ima.img = 'img/loadno60.gif';
-			this.ima.clickable = true;			
+		if (this.props.auth){
+			if (value=='on'){
+				this.props.onUserInput({spot: this.props.spot.spot, til: -1, state: 'on'});
+				this.waitSlide=false;
+			} else if(value=='off'){
+				this.props.onUserInput({spot: this.props.spot.spot, til: -1, state: 'off'});	
+				this.waitSlide=false;	
+			} else {
+				this.rbut='timed';
+				this.waitSlide='true'
+				console.log(this.props.spot.tleft)
+				this.props.onUserInput({spot: this.props.spot.spot, til: 1, state: 'timer'});
+				console.log('dealin  w timed')
+				//this.ima = {img:'img/loadno60.gif', clickable:true};
+				this.ima.img = 'img/loadno60.gif';
+				this.ima.clickable = true;			
+			}
+			this.setState({
+		      selectedValue: value//, img: ima
+		    });			
 		}
-		this.setState({
-	      selectedValue: value//, img: ima
-	    });
-		
 	},
-	
 	radioLand: function(){ //fires whenever state changes
 		var state = this.props.spot.state;
 		var til = this.props.spot.tleft;
@@ -169,7 +186,7 @@ var Spot = new React.createClass({
 		        <Butt imginfo={this.radioLand().ima} imfo={this.imfo} onButClick={this.handleTimerButClick}>{this.tval}</Butt>
 				<br/>
 				<div>
-					<br/><br/><br/><br/>
+					<br/><br/><br/>
 					<input  type="range" min="1" max="120" step="1" value={this.state.value} onChange={this.handleRangeChange}></input>
 				</div>
 				<br/>
@@ -187,14 +204,26 @@ var Spots = React.createClass({
 		tobj.state='waiting'
 		this.props.spots[tobj.spot].state='waiting';	
 		this.props.onUserInput(timerSet);
-	},		
+	},
+	componentDidMount: function() {
+		this.checkAuth()
+	},	
+	checkAuth: function(){
+		if (!this.props.auth){
+			return 'those registered can make changes'
+		} else {
+			//this.setState({message: ''})
+			return ''
+		}
+	},	
 	render: function() {
 		return (
 			<div className="sprklr"> 
 			   <h1>Cascada</h1>
-   				<Pond onUserInput={this.comingUserInput} spot={this.props.spots.pond} />
-   				<Spot onUserInput={this.comingUserInput} spot={this.props.spots.bridge} />
-				<Spot onUserInput={this.comingUserInput} spot={this.props.spots.center} />
+			   <p style={{color:'red', fontSize: 18, textShadow: '1px 1px white'}}>{this.checkAuth()}</p>
+   				<Pond onUserInput={this.comingUserInput} spot={this.props.spots.pond} auth={this.props.auth}/>
+   				<Spot onUserInput={this.comingUserInput} spot={this.props.spots.bridge} auth={this.props.auth}/>
+				<Spot onUserInput={this.comingUserInput} spot={this.props.spots.center} auth={this.props.auth}/>
 			</div>
 		);
 	}
@@ -203,20 +232,28 @@ var Spots = React.createClass({
 var socket, sse;
 
 var Yard = React.createClass({
+	mixins: [Navigation],
+	authorized: false,
 	getInitialState: function() {
 		return {spots: {"pond": {"spot": "pond", "tleft": -99, "state": "waiting"}, "center": {"spot": "center", "tleft": -99, "state": "waiting"}, "bridge": {"spot": "bridge", "tleft": -99, "state": "waiting"}}};
 
 	},
 	handleUserInput: function(timerSet){
-		var that=this;
-		var geturl = 'http://'+url+':'+port+'/ctrlWater/'
-		$.get( geturl, timerSet, function(data){
-			console.log(data.status)
-			this.setState({spots: data.status})
-		}.bind(this));
+		if (this.authorized){
+			var geturl = 'http://'+url+':'+port+'/ctrlWater/'
+			$.get( geturl, timerSet, function(data){
+				console.log(data.status)
+				this.setState({spots: data.status})
+			}.bind(this));			
+		} else {
+			console.log('not authorized')
+		}
+
 	},	
 	componentDidMount: function() {
 		console.log('yard mounted')
+		this.check4token()
+		console.log(this.authorized)
 //		this.mounted=true;
 		var that = this;
 		$.get('http://'+url+':'+port+'/report/', function(data){
@@ -224,20 +261,50 @@ var Yard = React.createClass({
 		}.bind(this));
       	sse = new EventSource('http://10.0.1.154:8088/my_event_source');
         sse.onmessage = function(message) {
-        	console.log('message fron sse')
+        	//console.log('message fron sse')
         	var sseData = JSON.parse(message.data).data
-            console.log(sseData);
+            //console.log(sseData);
             this.setState({spots: sseData})
         }.bind(this)		
 	},
 	componentWillUnmount: function(){
 		console.log('yard unmountd')
 		sse.close();
+	},
+	check4token: function(){
+		if (localStorage.casc){
+			var ls = JSON.parse(localStorage.casc)
+			if(ls.token){
+				$.ajax({
+					url: 'http://sitebuilt.net:3002/api/account',
+					headers: {"Authorization": "Bearer "+ ls.token},
+					success: function(data){
+						console.log(data.name)
+						if (data.name==ls.user){
+							console.log(ls.user + ' = ' +data.name)
+							this.authorized = true
+
+						} else {
+							this.authorized = false
+							this.transitionTo('reg')
+						}
+						console.log(this.authorized)
+					}.bind(this)
+				})
+				console.log(ls.token)
+			} else {
+				this.authorized = false
+				this.transitionTo('reg')
+			}
+		} else {
+			this.authorized = false
+			//this.transitionTo('reg')
+		}
 	},	
 	render: function(){
 		return (
 			<div> 
-			<Spots spots={this.state.spots} onUserInput={this.handleUserInput}/>
+			<Spots spots={this.state.spots} onUserInput={this.handleUserInput} auth={this.authorized}/>
 			</div>
 			)
 	}
