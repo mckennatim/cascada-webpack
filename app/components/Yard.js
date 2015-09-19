@@ -4,6 +4,7 @@ var RadioGroup = require('react-radio-group');
 var Butt = require('../components/Butt');
 //var Butt = require('../components/Butt');
 
+//var url = '50.177.97.139';
 var url = '50.177.97.139';
 var port = '8088'
 
@@ -246,7 +247,7 @@ var Yard = React.createClass({
 				this.setState({spots: data.status})
 			}.bind(this));			
 		} else {
-			console.log('not authorized')
+			console.log('yo not authorized')
 		}
 
 	},	
@@ -259,7 +260,7 @@ var Yard = React.createClass({
 		$.get('http://'+url+':'+port+'/report/', function(data){
 			this.setState({spots: data.spots})
 		}.bind(this));
-      	sse = new EventSource('http://10.0.1.154:8088/my_event_source');
+      	sse = new EventSource('http://'+url+':'+port+'/my_event_source');
         sse.onmessage = function(message) {
         	//console.log('message fron sse')
         	var sseData = JSON.parse(message.data).data

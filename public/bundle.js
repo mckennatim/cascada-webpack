@@ -23553,10 +23553,10 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Main = __webpack_require__(198);
-	var Home = __webpack_require__(199);
+	var Main = __webpack_require__(216);
+	var Home = __webpack_require__(217);
 	var Yard = __webpack_require__(197);
-	var Reg = __webpack_require__(200);
+	var Reg = __webpack_require__(218);
 	var Router = __webpack_require__(157);
 	var DefaultRoute = Router.DefaultRoute;
 	var Route = Router.Route;
@@ -23578,10 +23578,11 @@
 
 	var React = __webpack_require__(1);
 	var Navigation = __webpack_require__(157).Navigation;
-	var RadioGroup = __webpack_require__(218);
-	var Butt = __webpack_require__(202);
+	var RadioGroup = __webpack_require__(198);
+	var Butt = __webpack_require__(200);
 	//var Butt = require('../components/Butt');
 
+	//var url = '50.177.97.139';
 	var url = '50.177.97.139';
 	var port = '8088';
 
@@ -23872,7 +23873,7 @@
 					this.setState({ spots: data.status });
 				}).bind(this));
 			} else {
-				console.log('not authorized');
+				console.log('yo not authorized');
 			}
 		},
 		componentDidMount: function componentDidMount() {
@@ -23884,7 +23885,7 @@
 			$.get('http://' + url + ':' + port + '/report/', (function (data) {
 				this.setState({ spots: data.spots });
 			}).bind(this));
-			sse = new EventSource('http://10.0.1.154:8088/my_event_source');
+			sse = new EventSource('http://' + url + ':' + port + '/my_event_source');
 			sse.onmessage = (function (message) {
 				//console.log('message fron sse')
 				var sseData = JSON.parse(message.data).data;
@@ -23941,250 +23942,76 @@
 /* 198 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	// /lib contains the transpiled code. It's ignored by git but picked up by
+	// npm publish. See package.json's "prerelease" and "build" scripts
+	module.exports = __webpack_require__(199);
 
-	var _reactRouter = __webpack_require__(157);
-
-	var React = __webpack_require__(1);
-
-	var imgurl = 'img/bkg-water.png';
-	var mStyle = {
-	  li: {
-	    display: 'inline',
-	    padding: '10px'
-	  },
-	  ul: {},
-	  span: {
-	    color: 'yellow'
-	  },
-	  div: {
-	    height: '900',
-	    background: 'green',
-	    backgroundImage: 'url(' + imgurl + ')'
-	  }
-	};
-
-	var Main = React.createClass({
-	  displayName: 'Main',
-
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      { style: mStyle.div },
-	      React.createElement(
-	        'ul',
-	        null,
-	        React.createElement(
-	          'li',
-	          { style: mStyle.li },
-	          React.createElement(
-	            _reactRouter.Link,
-	            { to: '/home' },
-	            React.createElement(
-	              'span',
-	              { style: mStyle.span },
-	              ' home'
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          'li',
-	          { style: mStyle.li },
-	          React.createElement(
-	            _reactRouter.Link,
-	            { to: '/yard' },
-	            React.createElement(
-	              'span',
-	              { style: mStyle.span },
-	              ' yard'
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          'li',
-	          { style: mStyle.li },
-	          React.createElement(
-	            _reactRouter.Link,
-	            { to: '/reg' },
-	            React.createElement(
-	              'span',
-	              { style: mStyle.span },
-	              ' regg'
-	            )
-	          )
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'container' },
-	        React.createElement(_reactRouter.RouteHandler, null)
-	      )
-	    );
-	  }
-	});
-
-	module.exports = Main;
 
 /***/ },
 /* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
-	'use strict';
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, module, __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
+	    factory(exports, module, require('react'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, mod, global.React);
+	    global.RadioGroup = mod.exports;
+	  }
+	})(this, function (exports, module, _react) {
+	  'use strict';
 
-	var React = __webpack_require__(1);
+	  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var Home = React.createClass({
-		displayName: 'Home',
+	  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
-		componentDidMount: function componentDidMount() {},
-		render: function render() {
-			return React.createElement(
-				'div',
-				null,
-				'Home2'
-			);
-		}
+	  var _React = _interopRequireDefault(_react);
+
+	  function radio(name, selectedValue, onChange) {
+	    return _React['default'].createClass({
+	      render: function render() {
+	        return _React['default'].createElement('input', _extends({}, this.props, {
+	          type: 'radio',
+	          name: name,
+	          checked: this.props.value === selectedValue,
+	          onChange: onChange.bind(null, this.props.value) }));
+	      }
+	    });
+	  }
+
+	  module.exports = _React['default'].createClass({
+	    displayName: 'index',
+
+	    propTypes: {
+	      name: _react.PropTypes.string,
+	      selectedValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number]),
+	      onChange: _react.PropTypes.func,
+	      children: _react.PropTypes.func
+	    },
+
+	    render: function render() {
+	      var _props = this.props;
+	      var name = _props.name;
+	      var selectedValue = _props.selectedValue;
+	      var onChange = _props.onChange;
+	      var children = _props.children;
+
+	      return _React['default'].createElement(
+	        'div',
+	        null,
+	        children && children(radio(name, selectedValue, onChange))
+	      );
+	    }
+	  });
 	});
-
-	module.exports = Home;
 
 /***/ },
 /* 200 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var But = __webpack_require__(201);
-	var Butt = __webpack_require__(202);
-
-	var Reg = React.createClass({
-		displayName: 'Reg',
-
-		componentDidMount: function componentDidMount() {},
-		//imginfo: {img:'img/Waterfall_on.gif', clickable:t   rue},
-		imginfo: { img: 'img/waterfall_on.gif', clickable: true },
-		message: { con: 'get token', discon: 'delete token' },
-		imfo: {
-			but: { height: 100, width: 100, float: 'right' },
-			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.34em', margin: 6 }
-		},
-		handleTimerButClick: function handleTimerButClick() {
-			var appdata = { apikey: 'Ricuhiqozarulerofekuqepa' };
-			var user = 'tim';
-			console.log('handled in reg');
-			$.post('http://sitebuilt.net:3002/api/authenticate/' + user, appdata, (function (data) {
-				console.log(data);
-				if (data.message == 'token here') {
-					console.log(data.message);
-					localStorage.setItem('casc', JSON.stringify({ user: user, token: data.token }));
-					var ls = JSON.parse(localStorage.casc);
-					console.log(ls.user);
-				}
-			}).bind(this));
-		},
-		deleteLS: function deleteLS() {
-			console.log('deleting token');
-			localStorage.removeItem('casc');
-		},
-		render: function render() {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					Butt,
-					{ imginfo: this.imginfo, imfo: this.imfo, onButClick: this.handleTimerButClick },
-					this.message.con,
-					' '
-				),
-				React.createElement(
-					Butt,
-					{ imginfo: this.imginfo, imfo: this.imfo, onButClick: this.deleteLS },
-					this.message.discon,
-					' '
-				)
-			);
-		}
-	});
-
-	module.exports = Reg;
-
-/***/ },
-/* 201 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-
-	var But = new React.createClass({
-		getInitialState: function getInitialState() {
-			return {};
-		},
-		componentDidMount: function componentDidMount() {
-			return {};
-		},
-		sbBut: function sbBut() {
-			var ima = this.props.imginfo;
-			var imfo = this.props.imfo;
-			var bu = { bs: '', hover: {} };
-			if (this.props.imginfo.clickable) {
-				bu.bs = 'inset 0px 1px 0px #3e9cbf, 0px 5px 0px 0px #205c73, 0px 10px 5px #999';
-			}
-			return {
-				div: {
-					cursor: 'pointer',
-					float: 'right',
-					borderRadius: '10',
-					height: imfo.sz,
-					width: imfo.sz,
-					background: 'white',
-					backgroundImage: 'url(' + ima.img + ')',
-					backgroundSize: imfo.sz,
-					boxShadow: bu.bs
-				},
-				li: {},
-				span: {
-					color: imfo.txtColor,
-					position: 'relative',
-					left: imfo.left,
-					top: imfo.top
-				},
-				a: {}
-			};
-		},
-		handleTimerButClick: function handleTimerButClick() {
-			//if (this.props.imginfo.img=='img/loading60.gif' || this.props.imginfo.img=='img/loadno60.gif'){
-			if (this.props.imginfo.clickable) {
-				console.log(this.props.message + ':  ' + this.props.imginfo.img);
-				this.props.onButClick();
-			}
-		},
-		render: function render() {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'a',
-					{ style: this.sbBut().a, onClick: this.handleTimerButClick },
-					React.createElement(
-						'div',
-						{ style: this.sbBut().div },
-						React.createElement(
-							'div',
-							{ style: this.sbBut().span },
-							this.props.message
-						)
-					)
-				)
-			);
-		}
-	});
-
-	module.exports = But;
-
-/***/ },
-/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -24197,7 +24024,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var Radium = __webpack_require__(203);
+	var Radium = __webpack_require__(201);
 	var React = __webpack_require__(1);
 
 	var Butt = (function (_React$Component) {
@@ -24324,31 +24151,31 @@
 	module.exports = Butt;
 
 /***/ },
-/* 203 */
+/* 201 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Enhancer = __webpack_require__(206);
+	var Enhancer = __webpack_require__(204);
 
 	module.exports = function (ComposedComponent) {
 	  return Enhancer(ComposedComponent);
 	};
-	module.exports.Style = __webpack_require__(214);
-	module.exports.PrintStyleSheet = __webpack_require__(216);
-	module.exports.getState = __webpack_require__(204);
-	module.exports.keyframes = __webpack_require__(217);
-	module.exports.Config = __webpack_require__(212);
+	module.exports.Style = __webpack_require__(212);
+	module.exports.PrintStyleSheet = __webpack_require__(214);
+	module.exports.getState = __webpack_require__(202);
+	module.exports.keyframes = __webpack_require__(215);
+	module.exports.Config = __webpack_require__(210);
 
 /***/ },
-/* 204 */
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
 
 	'use strict';
 
-	var getStateKey = __webpack_require__(205);
+	var getStateKey = __webpack_require__(203);
 
 	var VALID_KEYS = [':active', ':focus', ':hover'];
 
@@ -24365,7 +24192,7 @@
 	module.exports = getState;
 
 /***/ },
-/* 205 */
+/* 203 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -24379,7 +24206,7 @@
 	module.exports = getStateKey;
 
 /***/ },
-/* 206 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/* @flow */
@@ -24394,8 +24221,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var resolveStyles = __webpack_require__(207);
-	var printStyles = __webpack_require__(213);
+	var resolveStyles = __webpack_require__(205);
+	var printStyles = __webpack_require__(211);
 
 	var enhanceWithRadium = function enhanceWithRadium(ComposedComponent) {
 	  var RadiumEnhancer = (function (_ComposedComponent) {
@@ -24476,7 +24303,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 207 */
+/* 205 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/* @flow */
@@ -24485,13 +24312,13 @@
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var MouseUpListener = __webpack_require__(208);
-	var getState = __webpack_require__(204);
-	var getStateKey = __webpack_require__(205);
-	var Prefixer = __webpack_require__(209);
-	var Config = __webpack_require__(212);
+	var MouseUpListener = __webpack_require__(206);
+	var getState = __webpack_require__(202);
+	var getStateKey = __webpack_require__(203);
+	var Prefixer = __webpack_require__(207);
+	var Config = __webpack_require__(210);
 
-	var ExecutionEnvironment = __webpack_require__(210);
+	var ExecutionEnvironment = __webpack_require__(208);
 	var React = __webpack_require__(1);
 
 	// babel-eslint 3.1.7 fails here for some reason, error:
@@ -24852,7 +24679,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 208 */
+/* 206 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -24896,7 +24723,7 @@
 	};
 
 /***/ },
-/* 209 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -24906,8 +24733,8 @@
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(210);
-	var arrayFind = __webpack_require__(211);
+	var ExecutionEnvironment = __webpack_require__(208);
+	var arrayFind = __webpack_require__(209);
 
 	var VENDOR_PREFIX_REGEX = /-(moz|webkit|ms|o)-/;
 
@@ -25318,7 +25145,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 210 */
+/* 208 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -25363,7 +25190,7 @@
 
 
 /***/ },
-/* 211 */
+/* 209 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -25392,14 +25219,14 @@
 
 
 /***/ },
-/* 212 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(210);
+	var ExecutionEnvironment = __webpack_require__(208);
 
 	var _matchMediaFunction = ExecutionEnvironment.canUseDOM && window && window.matchMedia && function (mediaQueryString) {
 	  return window.matchMedia(mediaQueryString);
@@ -25420,7 +25247,7 @@
 	};
 
 /***/ },
-/* 213 */
+/* 211 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -25498,13 +25325,13 @@
 	};
 
 /***/ },
-/* 214 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var createMarkupForStyles = __webpack_require__(215);
-	var Prefixer = __webpack_require__(209);
+	var createMarkupForStyles = __webpack_require__(213);
+	var Prefixer = __webpack_require__(207);
 
 	var React = __webpack_require__(1);
 
@@ -25589,7 +25416,7 @@
 	module.exports = Style;
 
 /***/ },
-/* 215 */
+/* 213 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -25606,15 +25433,15 @@
 	module.exports = createMarkupForStyles;
 
 /***/ },
-/* 216 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
 
-	var Style = __webpack_require__(214);
-	var printStyles = __webpack_require__(213);
+	var Style = __webpack_require__(212);
+	var printStyles = __webpack_require__(211);
 
 	var PrintStyle = React.createClass({
 	  displayName: 'PrintStyle',
@@ -25653,17 +25480,17 @@
 	module.exports = PrintStyle;
 
 /***/ },
-/* 217 */
+/* 215 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
 
 	'use strict';
 
-	var createMarkupForStyles = __webpack_require__(215);
-	var Prefixer = __webpack_require__(209);
+	var createMarkupForStyles = __webpack_require__(213);
+	var Prefixer = __webpack_require__(207);
 
-	var ExecutionEnvironment = __webpack_require__(210);
+	var ExecutionEnvironment = __webpack_require__(208);
 
 	var isAnimationSupported = ExecutionEnvironment.canUseDOM && Prefixer.getPrefixedPropertyName('animation') !== false;
 
@@ -25712,76 +25539,250 @@
 	module.exports = keyframes;
 
 /***/ },
+/* 216 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _reactRouter = __webpack_require__(157);
+
+	var React = __webpack_require__(1);
+
+	var imgurl = 'img/bkg-water.png';
+	var mStyle = {
+	  li: {
+	    display: 'inline',
+	    padding: '10px'
+	  },
+	  ul: {},
+	  span: {
+	    color: 'yellow'
+	  },
+	  div: {
+	    height: '900',
+	    background: 'green',
+	    backgroundImage: 'url(' + imgurl + ')'
+	  }
+	};
+
+	var Main = React.createClass({
+	  displayName: 'Main',
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { style: mStyle.div },
+	      React.createElement(
+	        'ul',
+	        null,
+	        React.createElement(
+	          'li',
+	          { style: mStyle.li },
+	          React.createElement(
+	            _reactRouter.Link,
+	            { to: '/home' },
+	            React.createElement(
+	              'span',
+	              { style: mStyle.span },
+	              ' home'
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          { style: mStyle.li },
+	          React.createElement(
+	            _reactRouter.Link,
+	            { to: '/yard' },
+	            React.createElement(
+	              'span',
+	              { style: mStyle.span },
+	              ' yard'
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          { style: mStyle.li },
+	          React.createElement(
+	            _reactRouter.Link,
+	            { to: '/reg' },
+	            React.createElement(
+	              'span',
+	              { style: mStyle.span },
+	              ' regg'
+	            )
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'container' },
+	        React.createElement(_reactRouter.RouteHandler, null)
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Main;
+
+/***/ },
+/* 217 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+
+	var Home = React.createClass({
+		displayName: 'Home',
+
+		componentDidMount: function componentDidMount() {},
+		render: function render() {
+			return React.createElement(
+				'div',
+				null,
+				'Home2'
+			);
+		}
+	});
+
+	module.exports = Home;
+
+/***/ },
 /* 218 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// /lib contains the transpiled code. It's ignored by git but picked up by
-	// npm publish. See package.json's "prerelease" and "build" scripts
-	module.exports = __webpack_require__(219);
+	'use strict';
 
+	var React = __webpack_require__(1);
+	var But = __webpack_require__(219);
+	var Butt = __webpack_require__(200);
+
+	var Reg = React.createClass({
+		displayName: 'Reg',
+
+		componentDidMount: function componentDidMount() {},
+		//imginfo: {img:'img/Waterfall_on.gif', clickable:t   rue},
+		imginfo: { img: 'img/waterfall_on.gif', clickable: true },
+		message: { con: 'get token', discon: 'delete token' },
+		imfo: {
+			but: { height: 100, width: 100, float: 'right' },
+			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.34em', margin: 6 }
+		},
+		handleTimerButClick: function handleTimerButClick() {
+			var appdata = { apikey: 'Ricuhiqozarulerofekuqepa' };
+			var user = 'tim';
+			console.log('handled in reg');
+			$.post('http://sitebuilt.net:3002/api/authenticate/' + user, appdata, (function (data) {
+				console.log(data);
+				if (data.message == 'token here') {
+					console.log(data.message);
+					localStorage.setItem('casc', JSON.stringify({ user: user, token: data.token }));
+					var ls = JSON.parse(localStorage.casc);
+					console.log(ls.user);
+				}
+			}).bind(this));
+		},
+		deleteLS: function deleteLS() {
+			console.log('deleting token');
+			localStorage.removeItem('casc');
+		},
+		render: function render() {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					Butt,
+					{ imginfo: this.imginfo, imfo: this.imfo, onButClick: this.handleTimerButClick },
+					this.message.con,
+					' '
+				),
+				React.createElement(
+					Butt,
+					{ imginfo: this.imginfo, imfo: this.imfo, onButClick: this.deleteLS },
+					this.message.discon,
+					' '
+				)
+			);
+		}
+	});
+
+	module.exports = Reg;
 
 /***/ },
 /* 219 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, module, __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
-	    factory(exports, module, require('react'));
-	  } else {
-	    var mod = {
-	      exports: {}
-	    };
-	    factory(mod.exports, mod, global.React);
-	    global.RadioGroup = mod.exports;
-	  }
-	})(this, function (exports, module, _react) {
-	  'use strict';
+	'use strict';
 
-	  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+	var React = __webpack_require__(1);
 
-	  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	  var _React = _interopRequireDefault(_react);
-
-	  function radio(name, selectedValue, onChange) {
-	    return _React['default'].createClass({
-	      render: function render() {
-	        return _React['default'].createElement('input', _extends({}, this.props, {
-	          type: 'radio',
-	          name: name,
-	          checked: this.props.value === selectedValue,
-	          onChange: onChange.bind(null, this.props.value) }));
-	      }
-	    });
-	  }
-
-	  module.exports = _React['default'].createClass({
-	    displayName: 'index',
-
-	    propTypes: {
-	      name: _react.PropTypes.string,
-	      selectedValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number]),
-	      onChange: _react.PropTypes.func,
-	      children: _react.PropTypes.func
-	    },
-
-	    render: function render() {
-	      var _props = this.props;
-	      var name = _props.name;
-	      var selectedValue = _props.selectedValue;
-	      var onChange = _props.onChange;
-	      var children = _props.children;
-
-	      return _React['default'].createElement(
-	        'div',
-	        null,
-	        children && children(radio(name, selectedValue, onChange))
-	      );
-	    }
-	  });
+	var But = new React.createClass({
+		getInitialState: function getInitialState() {
+			return {};
+		},
+		componentDidMount: function componentDidMount() {
+			return {};
+		},
+		sbBut: function sbBut() {
+			var ima = this.props.imginfo;
+			var imfo = this.props.imfo;
+			var bu = { bs: '', hover: {} };
+			if (this.props.imginfo.clickable) {
+				bu.bs = 'inset 0px 1px 0px #3e9cbf, 0px 5px 0px 0px #205c73, 0px 10px 5px #999';
+			}
+			return {
+				div: {
+					cursor: 'pointer',
+					float: 'right',
+					borderRadius: '10',
+					height: imfo.sz,
+					width: imfo.sz,
+					background: 'white',
+					backgroundImage: 'url(' + ima.img + ')',
+					backgroundSize: imfo.sz,
+					boxShadow: bu.bs
+				},
+				li: {},
+				span: {
+					color: imfo.txtColor,
+					position: 'relative',
+					left: imfo.left,
+					top: imfo.top
+				},
+				a: {}
+			};
+		},
+		handleTimerButClick: function handleTimerButClick() {
+			//if (this.props.imginfo.img=='img/loading60.gif' || this.props.imginfo.img=='img/loadno60.gif'){
+			if (this.props.imginfo.clickable) {
+				console.log(this.props.message + ':  ' + this.props.imginfo.img);
+				this.props.onButClick();
+			}
+		},
+		render: function render() {
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'a',
+					{ style: this.sbBut().a, onClick: this.handleTimerButClick },
+					React.createElement(
+						'div',
+						{ style: this.sbBut().div },
+						React.createElement(
+							'div',
+							{ style: this.sbBut().span },
+							this.props.message
+						)
+					)
+				)
+			);
+		}
 	});
+
+	module.exports = But;
 
 /***/ }
 /******/ ]);
