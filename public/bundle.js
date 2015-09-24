@@ -23582,8 +23582,8 @@
 	var Butt = __webpack_require__(200);
 	//var Butt = require('../components/Butt');
 
-	//var url = '50.177.97.139';
 	var url = '50.177.97.139';
+	// var url = '10.0.1.155';
 	var port = '8088';
 
 	var Pond = new React.createClass({
@@ -23609,12 +23609,12 @@
 				}
 			} else if (state == 'timer' | state == 'on') {
 				if (auth) {
-					var message = this.props.spot.tleft + 1 + ' to go click Off';
+					var message = this.props.spot.tleft + ' to go click Off';
 					//return{message: message, img: "img/Waterfall_on.gif"}
 					this.pime = { message: message, img: 'img/waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: true } };
 					return this.pime;
 				} else {
-					var message = this.props.spot.tleft + 1 + ' to go';
+					var message = this.props.spot.tleft + ' to go';
 					//return{message: message, img: "img/Waterfall_on.gif"}
 					this.pime = { message: message, img: 'img/waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: false } };
 					return this.pime;
@@ -23628,6 +23628,7 @@
 			return { value: 10, pime: { message: 'cat', img: 'img/waiting.gif' } };
 		},
 		componentDidMount: function componentDidMount() {
+			console.log(this.props.spot.spot);
 			return { value: this.props.spot.tleft };
 		},
 		handleChange: function handleChange(event) {
@@ -23638,10 +23639,11 @@
 			var state = this.props.spot.state;
 			if (state == 'off') {
 				//console.log('turning on');
-				this.props.onUserInput({ spot: this.props.spot.spot, til: this.state.value, state: 'timer' });
+				console.log(this.props.spot.spot);
+				this.props.onUserInput({ spot: 'pond', til: this.state.value, state: 'timer' });
 			} else {
 				//console.log('turning off');
-				this.props.onUserInput({ spot: this.props.spot.spot, til: -1, state: 'off' });
+				this.props.onUserInput({ spot: 'pond', til: -1, state: 'off' });
 			}
 		},
 		render: function render() {
@@ -23744,8 +23746,8 @@
 			this.waitSlide = false;
 			var til = this.props.spot.tleft;
 			if (this.radioLand().rbut == 'timed') {
-				console.log('image is timer');
-				this.props.onUserInput({ spot: this.props.spot.spot, til: this.state.value, state: 'timer' });
+				console.log('image is dog timer' + this.state.value + ' tleft=' + til);
+				this.props.onUserInput({ spot: this.props.spot.spot, til: Number(this.state.value), state: 'timer' });
 			}
 		},
 		render: function render() {
@@ -23866,6 +23868,8 @@
 			return { spots: { 'pond': { 'spot': 'pond', 'tleft': -99, 'state': 'waiting' }, 'center': { 'spot': 'center', 'tleft': -99, 'state': 'waiting' }, 'bridge': { 'spot': 'bridge', 'tleft': -99, 'state': 'waiting' } } };
 		},
 		handleUserInput: function handleUserInput(timerSet) {
+			console.log('handling user input ');
+			console.log(timerSet);
 			if (this.authorized) {
 				var geturl = 'http://' + url + ':' + port + '/ctrlWater/';
 				$.get(geturl, timerSet, (function (data) {
