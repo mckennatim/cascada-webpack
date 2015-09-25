@@ -12,6 +12,7 @@
     "color": "^0.10.1",
     "radium": "^0.13.7",
     "react": "^0.13.3",
+    "react-mixin": "3.0.0",
     "react-radio-group": "^2.0.2",
     "react-router": "^0.13.3"
   },
