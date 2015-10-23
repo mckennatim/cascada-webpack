@@ -9,7 +9,7 @@ var Spots = React.createClass({
 		var tobj = JSON.parse(tstr);
 		tobj.state='waiting'
 		this.props.spots[tobj.spot].state='waiting';	
-		this.props.onUserInput(timerSet);
+		this.props.relayUserInput(timerSet);
 	},
 	componentDidMount: function() {
 		this.checkAuth()

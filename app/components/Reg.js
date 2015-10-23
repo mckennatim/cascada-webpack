@@ -1,5 +1,4 @@
 var React = require('react');
-var But = require('../components/But');
 var Butt = require('../components/Butt');
 
 var Reg = React.createClass({

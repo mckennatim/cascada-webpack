@@ -58,7 +58,7 @@ var Yard = React.createClass({
 	render: function(){
 		return (
 			<div> 
-			<Spots spots={this.state.spots} onUserInput={this.handleUserInput} auth={this.state.authorized}/>
+				<Spots spots={this.state.spots} relayUserInput={this.handleUserInput} auth={this.state.authorized}/>
 			</div>
 			)
 	}

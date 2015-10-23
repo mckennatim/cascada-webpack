@@ -23579,7 +23579,6 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var But = __webpack_require__(198);
 	var Butt = __webpack_require__(199);
 
 	var Reg = React.createClass({
@@ -23655,80 +23654,7 @@
 	module.exports = Reg;
 
 /***/ },
-/* 198 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-
-	var But = new React.createClass({
-		getInitialState: function getInitialState() {
-			return {};
-		},
-		componentDidMount: function componentDidMount() {
-			return {};
-		},
-		sbBut: function sbBut() {
-			var ima = this.props.imginfo;
-			var imfo = this.props.imfo;
-			var bu = { bs: '', hover: {} };
-			if (this.props.imginfo.clickable) {
-				bu.bs = 'inset 0px 1px 0px #3e9cbf, 0px 5px 0px 0px #205c73, 0px 10px 5px #999';
-			}
-			return {
-				div: {
-					cursor: 'pointer',
-					float: 'right',
-					borderRadius: '10',
-					height: imfo.sz,
-					width: imfo.sz,
-					background: 'white',
-					backgroundImage: 'url(' + ima.img + ')',
-					backgroundSize: imfo.sz,
-					boxShadow: bu.bs
-				},
-				li: {},
-				span: {
-					color: imfo.txtColor,
-					position: 'relative',
-					left: imfo.left,
-					top: imfo.top
-				},
-				a: {}
-			};
-		},
-		handleTimerButClick: function handleTimerButClick() {
-			//if (this.props.imginfo.img=='img/loading60.gif' || this.props.imginfo.img=='img/loadno60.gif'){
-			if (this.props.imginfo.clickable) {
-				console.log(this.props.message + ':  ' + this.props.imginfo.img);
-				this.props.onButClick();
-			}
-		},
-		render: function render() {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'a',
-					{ style: this.sbBut().a, onClick: this.handleTimerButClick },
-					React.createElement(
-						'div',
-						{ style: this.sbBut().div },
-						React.createElement(
-							'div',
-							{ style: this.sbBut().span },
-							this.props.message
-						)
-					)
-				)
-			);
-		}
-	});
-
-	module.exports = But;
-
-/***/ },
+/* 198 */,
 /* 199 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -25417,7 +25343,7 @@
 			return React.createElement(
 				'div',
 				null,
-				React.createElement(Spots, { spots: this.state.spots, onUserInput: this.handleUserInput, auth: this.state.authorized })
+				React.createElement(Spots, { spots: this.state.spots, relayUserInput: this.handleUserInput, auth: this.state.authorized })
 			);
 		}
 	});
@@ -26193,7 +26119,7 @@
 			var tobj = JSON.parse(tstr);
 			tobj.state = 'waiting';
 			this.props.spots[tobj.spot].state = 'waiting';
-			this.props.onUserInput(timerSet);
+			this.props.relayUserInput(timerSet);
 		},
 		componentDidMount: function componentDidMount() {
 			this.checkAuth();
