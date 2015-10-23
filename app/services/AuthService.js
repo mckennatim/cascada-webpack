@@ -1,4 +1,4 @@
-
+var url ='http://sitebuilt.net:3002'
 
 class AuthService {
   constructor(){
@@ -9,7 +9,7 @@ class AuthService {
   signup(username, email) {
     this.setUser(username)
   	$.ajax({
-  		url: 'http://sitebuilt.net:3002/api/ismatch/?name='+username+'&email='+email,
+  		url: url+'/api/ismatch/?name='+username+'&email='+email,
   		success: function(data){
   			console.log(data)
   		}.bind(this)
@@ -29,7 +29,7 @@ class AuthService {
   fetchToken(user,apikey, callback){
     var appdata ={apikey: apikey}
     $.ajax({
-      url: 'http://sitebuilt.net:3002/api/authenticate/'+user, 
+      url: url+'/api/authenticate/'+user, 
       type: 'POST',
       data: appdata,
       success: function(data, status, response){
@@ -85,7 +85,7 @@ class AuthService {
     var retval;  
     if(tok){
       $.ajax({
-        url: 'http://sitebuilt.net:3002/api/account',
+        url: url+'/api/account',
         headers: {"Authorization": "Bearer "+ tok},
         success: function(data, status, response){
           if (data.name ==user){

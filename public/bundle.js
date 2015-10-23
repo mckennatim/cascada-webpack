@@ -25361,8 +25361,8 @@
 	var Navigation = __webpack_require__(157).Navigation;
 	var Spots = __webpack_require__(225);
 
-	// var url = '73.219.172.208';
-	var url = '10.0.1.155';
+	var url = '73.249.62.27';
+	//var url = '10.0.1.155';
 	var port = '8088';
 
 	var socket, sse;
@@ -25438,6 +25438,8 @@
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+	var url = 'http://sitebuilt.net:3002';
+
 	var AuthService = (function () {
 	  function AuthService() {
 	    _classCallCheck(this, AuthService);
@@ -25451,7 +25453,7 @@
 	    value: function signup(username, email) {
 	      this.setUser(username);
 	      $.ajax({
-	        url: 'http://sitebuilt.net:3002/api/ismatch/?name=' + username + '&email=' + email,
+	        url: url + '/api/ismatch/?name=' + username + '&email=' + email,
 	        success: (function (data) {
 	          console.log(data);
 	        }).bind(this)
@@ -25472,7 +25474,7 @@
 	    value: function fetchToken(user, apikey, callback) {
 	      var appdata = { apikey: apikey };
 	      $.ajax({
-	        url: 'http://sitebuilt.net:3002/api/authenticate/' + user,
+	        url: url + '/api/authenticate/' + user,
 	        type: 'POST',
 	        data: appdata,
 	        success: function success(data, status, response) {
@@ -25533,7 +25535,7 @@
 	      var retval;
 	      if (tok) {
 	        $.ajax({
-	          url: 'http://sitebuilt.net:3002/api/account',
+	          url: url + '/api/account',
 	          headers: { 'Authorization': 'Bearer ' + tok },
 	          success: function success(data, status, response) {
 	            if (data.name == user) {

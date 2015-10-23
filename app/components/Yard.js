@@ -3,8 +3,8 @@ var Navigation = require('react-router').Navigation;
 var Spots = require('../components/Spots');
 import Auth from '../services/AuthService';
 
-// var url = '73.219.172.208';
-var url = '10.0.1.155';
+var url = '73.249.62.27';
+//var url = '10.0.1.155';
 var port = '8088'
 
 var socket, sse;
