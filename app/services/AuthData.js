@@ -3,7 +3,8 @@ var AuthData = {
 	email:'',
 	dog:'ili',
 	signup: function(){
-		console.log('in signup')
+		this.dog = 'uli'
+		console.log(this.dog)
 	}
 }
 

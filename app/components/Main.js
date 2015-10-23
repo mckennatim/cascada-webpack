@@ -24,9 +24,7 @@ var Main = React.createClass({
     return (
       <div style={mStyle.div}>
         <ul>
-        <li style={mStyle.li}><Link to="/home"><span style={mStyle.span}> home </span></Link></li>
         <li style={mStyle.li}><Link to="/yard"><span style={mStyle.span}> yard </span></Link></li>
-        <li style={mStyle.li}><Link to="/reg"><span style={mStyle.span}> reg </span></Link></li>
         <li style={mStyle.li}><Link to="/login"><span style={mStyle.span}> login </span></Link></li>
         <li style={mStyle.li}><Link to="/signup"><span style={mStyle.span}> signup </span></Link></li>
         </ul>
