@@ -69,7 +69,7 @@ var Pond = new React.createClass({
 		return (
 			<div> 
 				<h4 style={{color: "yellow"}}>pond</h4>
-				<Butt imginfo={this.turnwhat().imginfo} imfo={this.imfo} onButClick={this.handleClick}>{this.turnwhat().message} </Butt>
+				<Butt imginfo={this.turnwhat().imginfo} imfo={this.imfo} onButClick={this.handleClick} > {this.turnwhat().message} </Butt>
 				<br/>
 				<input  type="range" min="1" max="120" step="1" value={this.state.value} onChange={this.handleChange}></input><br/>
 			</div>
