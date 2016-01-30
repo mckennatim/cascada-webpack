@@ -23553,11 +23553,11 @@
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Main = __webpack_require__(215);
-	var Yard = __webpack_require__(217);
-	var Reg = __webpack_require__(197);
-	var Login = __webpack_require__(221);
-	var Signup = __webpack_require__(222);
+	var Main = __webpack_require__(197);
+	var Yard = __webpack_require__(198);
+	var Reg = __webpack_require__(221);
+	var Login = __webpack_require__(222);
+	var Signup = __webpack_require__(223);
 	var Router = __webpack_require__(157);
 	var DefaultRoute = Router.DefaultRoute;
 	var Route = Router.Route;
@@ -23578,84 +23578,456 @@
 
 	'use strict';
 
+	var _reactRouter = __webpack_require__(157);
+
 	var React = __webpack_require__(1);
-	var Butt = __webpack_require__(199);
 
-	var Reg = React.createClass({
-		displayName: 'Reg',
+	var imgurl = 'img/bkg-water.png';
+	var mStyle = {
+	  li: {
+	    display: 'inline',
+	    padding: '10px'
+	  },
+	  ul: {},
+	  span: {
+	    color: 'yellow'
+	  },
+	  div: {
+	    height: '900',
+	    background: 'green',
+	    backgroundImage: 'url(' + imgurl + ')'
+	  }
+	};
 
-		componentDidMount: function componentDidMount() {},
-		//imginfo: {img:'img/Waterfall_on.gif', clickable:t   rue},
-		imginfo: { img: 'img/waterfall_on.gif', clickable: true },
-		imgemail: { img: 'img/Email.gif', clickable: true },
-		message: { con: 'get token', discon: 'delete token', email: 'send me a request' },
-		imfo: {
-			but: { height: 100, width: 100, float: 'right' },
-			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.34em', margin: 6 }
+	var Main = React.createClass({
+	  displayName: 'Main',
+
+	  render: function render() {
+	    return React.createElement(
+	      'div',
+	      { style: mStyle.div },
+	      React.createElement(
+	        'ul',
+	        null,
+	        React.createElement(
+	          'li',
+	          { style: mStyle.li },
+	          React.createElement(
+	            _reactRouter.Link,
+	            { to: '/yard' },
+	            React.createElement(
+	              'span',
+	              { style: mStyle.span },
+	              ' yard '
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          { style: mStyle.li },
+	          React.createElement(
+	            _reactRouter.Link,
+	            { to: '/login' },
+	            React.createElement(
+	              'span',
+	              { style: mStyle.span },
+	              ' login '
+	            )
+	          )
+	        ),
+	        React.createElement(
+	          'li',
+	          { style: mStyle.li },
+	          React.createElement(
+	            _reactRouter.Link,
+	            { to: '/signup' },
+	            React.createElement(
+	              'span',
+	              { style: mStyle.span },
+	              ' signup '
+	            )
+	          )
+	        )
+	      ),
+	      React.createElement(
+	        'div',
+	        { className: 'container' },
+	        React.createElement(_reactRouter.RouteHandler, null)
+	      )
+	    );
+	  }
+	});
+
+	module.exports = Main;
+
+/***/ },
+/* 198 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	var _servicesAuthService = __webpack_require__(199);
+
+	var _servicesAuthService2 = _interopRequireDefault(_servicesAuthService);
+
+	var React = __webpack_require__(1);
+	var Navigation = __webpack_require__(157).Navigation;
+	var Spots = __webpack_require__(200);
+
+	var url = '73.249.62.27';
+	//var url = '10.0.1.155';
+	var port = '8088';
+
+	var socket, sse;
+
+	var Yard = React.createClass({
+		displayName: 'Yard',
+
+		mixins: [Navigation],
+		getInitialState: function getInitialState() {
+			return { spots: { 'pond': { 'spot': 'pond', 'tleft': -99, 'state': 'waiting' }, 'center': { 'spot': 'center', 'tleft': -99, 'state': 'waiting' }, 'bridge': { 'spot': 'bridge', 'tleft': -99, 'state': 'waiting' } }, authorized: false };
 		},
-		imfe: {
-			but: { height: 50, width: 50, float: 'left' },
-			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.34em', margin: 6 }
+		handleUserInput: function handleUserInput(timerSet) {
+			console.log('handling user input ');
+			console.log(timerSet);
+			if (this.state.authorized) {
+				var geturl = 'http://' + url + ':' + port + '/ctrlWater/';
+				$.get(geturl, timerSet, (function (data) {
+					console.log(data.status);
+					this.setState({ spots: data.status });
+				}).bind(this));
+			} else {
+				console.log('yo not authorized');
+			}
 		},
-		handleTimerButClick: function handleTimerButClick() {
-			var appdata = { apikey: 'Ricuhiqozarulerofekuqepa' };
-			var user = 'tim';
-			console.log('handled in reg');
-			$.post('http://sitebuilt.net:3002/api/authenticate/' + user, appdata, (function (data) {
-				console.log(data);
-				if (data.message == 'token here') {
-					console.log(data.message);
-					localStorage.setItem('casc', JSON.stringify({ user: user, token: data.token }));
-					var ls = JSON.parse(localStorage.casc);
-					console.log(ls.user);
-				}
+		componentDidMount: function componentDidMount() {
+			console.log('yard mounted');
+			_servicesAuthService2['default'].esbuenToken(this.tokenCallback);
+			var that = this;
+			$.get('http://' + url + ':' + port + '/report/', (function (data) {
+				this.setState({ spots: data.spots });
 			}).bind(this));
+			sse = new EventSource('http://' + url + ':' + port + '/my_event_source');
+			sse.onmessage = (function (message) {
+				//console.log('message fron sse')
+				var sseData = JSON.parse(message.data).data;
+				//console.log(sseData);
+				this.setState({ spots: sseData });
+			}).bind(this);
 		},
-		deleteLS: function deleteLS() {
-			console.log('deleting token');
-			localStorage.removeItem('casc');
-		},
-		emailMe: function emailMe() {
 
-			console.log('emailing me');
-			window.open('mailto:mckenna.tim@gmail.com?subject=tryit&body=hey');
+		tokenCallback: function tokenCallback(tf) {
+			this.setState({ authorized: tf });
+			console.log(tf);
 		},
+
+		componentWillUnmount: function componentWillUnmount() {
+			console.log('yard unmountd');
+			sse.close();
+		},
+
 		render: function render() {
 			return React.createElement(
 				'div',
 				null,
-				React.createElement(
-					Butt,
-					{ imginfo: this.imginfo, imfo: this.imfo, onButClick: this.handleTimerButClick },
-					this.message.con,
-					' '
-				),
-				React.createElement(
-					Butt,
-					{ imginfo: this.imginfo, imfo: this.imfo, onButClick: this.deleteLS },
-					this.message.discon,
-					' '
-				),
-				React.createElement(
-					Butt,
-					{ imginfo: this.imgemail, imfo: this.imfe, onButClick: this.emailMe },
-					this.message.email,
-					' '
-				),
-				React.createElement(
-					'a',
-					{ href: 'mailto:mckenna.tim@gmail.com?subject=tryit&body=hey' },
-					'mail me something'
-				)
+				React.createElement(Spots, { spots: this.state.spots, relayUserInput: this.handleUserInput, auth: this.state.authorized })
 			);
 		}
 	});
 
-	module.exports = Reg;
+	module.exports = Yard;
 
 /***/ },
-/* 198 */,
 /* 199 */
+/***/ function(module, exports) {
+
+	'use strict';
+
+	Object.defineProperty(exports, '__esModule', {
+	  value: true
+	});
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	var url = 'http://sitebuilt.net:3002';
+
+	var AuthService = (function () {
+	  function AuthService() {
+	    _classCallCheck(this, AuthService);
+
+	    this.getData();
+	    console.log(this.getData());
+	  }
+
+	  _createClass(AuthService, [{
+	    key: 'signup',
+	    value: function signup(username, email) {
+	      this.setUser(username);
+	      $.ajax({
+	        url: url + '/api/ismatch/?name=' + username + '&email=' + email,
+	        success: (function (data) {
+	          console.log(data);
+	        }).bind(this)
+	      });
+	      return {
+	        url: 'SIGNUP_URL',
+	        method: 'POST',
+	        crossOrigin: true,
+	        type: 'json',
+	        udata: {
+	          username: username,
+	          email: email
+	        }
+	      };
+	    }
+	  }, {
+	    key: 'fetchToken',
+	    value: function fetchToken(user, apikey, callback) {
+	      var appdata = { apikey: apikey };
+	      $.ajax({
+	        url: url + '/api/authenticate/' + user,
+	        type: 'POST',
+	        data: appdata,
+	        success: function success(data, status, response) {
+	          callback(response, user);
+	        },
+	        error: (function (response) {
+	          callback(response, user);
+	        }).bind(this)
+	      });
+	    }
+	  }, {
+	    key: 'getData',
+	    value: function getData() {
+	      if (localStorage.casc) {
+	        var ls = JSON.parse(localStorage.casc);
+	        var token = ls.token || '';
+	        var user = ls.user || '';
+	        return { user: user, token: token };
+	      } else {
+	        return { user: '', token: '' };
+	      }
+	    }
+	  }, {
+	    key: 'setData',
+	    value: function setData(d) {
+	      localStorage.setItem('casc', JSON.stringify(d));
+	    }
+	  }, {
+	    key: 'setUser',
+	    value: function setUser(uname) {
+	      var d = this.getData();
+	      d.user = uname;
+	      this.setData(d);
+	    }
+	  }, {
+	    key: 'setToken',
+	    value: function setToken(tok) {
+	      var d = this.getData();
+	      d.token = tok;
+	      this.setData(d);
+	    }
+	  }, {
+	    key: 'getToken',
+	    value: function getToken() {
+	      var d = this.getData();
+	      return d.token;
+	    }
+	  }, {
+	    key: 'getUser',
+	    value: function getUser() {
+	      return this.getData().user;
+	    }
+	  }, {
+	    key: 'esbuenToken',
+	    value: function esbuenToken(ydcb) {
+	      var tok = this.getToken();
+	      var user = this.getUser();
+	      var retval;
+	      if (tok) {
+	        $.ajax({
+	          url: url + '/api/account',
+	          headers: { 'Authorization': 'Bearer ' + tok },
+	          success: function success(data, status, response) {
+	            if (data.name == user) {
+	              ydcb(true);
+	            }
+	          },
+	          error: (function (response) {
+	            ydcb(false);
+	          }).bind(this)
+	        });
+	      } else {
+	        ydcb(false);
+	      }
+	    }
+	  }]);
+
+	  return AuthService;
+	})();
+
+	function callback(f) {
+	  console.log(f);
+	}
+
+	exports['default'] = new AuthService();
+	module.exports = exports['default'];
+
+/***/ },
+/* 200 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var Pond = __webpack_require__(201);
+	var Spot = __webpack_require__(218);
+
+	var Spots = React.createClass({
+		displayName: 'Spots',
+
+		comingUserInput: function comingUserInput(timerSet) {
+			var tstr = JSON.stringify(timerSet);
+			var tobj = JSON.parse(tstr);
+			tobj.state = 'waiting';
+			this.props.spots[tobj.spot].state = 'waiting';
+			this.props.relayUserInput(timerSet);
+		},
+		componentDidMount: function componentDidMount() {
+			this.checkAuth();
+		},
+		checkAuth: function checkAuth() {
+			if (!this.props.auth) {
+				return 'signup and login to make changes';
+			} else {
+				return '';
+			}
+		},
+		render: function render() {
+			return React.createElement(
+				'div',
+				{ className: 'sprklr' },
+				React.createElement(
+					'h1',
+					null,
+					'Cascada'
+				),
+				React.createElement(
+					'p',
+					{ style: { color: 'red', fontSize: 18, textShadow: '1px 1px white' } },
+					this.checkAuth()
+				),
+				React.createElement(Pond, { onUserInput: this.comingUserInput, spot: this.props.spots.pond, auth: this.props.auth }),
+				React.createElement(Spot, { onUserInput: this.comingUserInput, spot: this.props.spots.bridge, auth: this.props.auth }),
+				React.createElement(Spot, { onUserInput: this.comingUserInput, spot: this.props.spots.center, auth: this.props.auth })
+			);
+		}
+	});
+
+	module.exports = Spots;
+
+/***/ },
+/* 201 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var React = __webpack_require__(1);
+	var Butt = __webpack_require__(202);
+
+	var Pond = new React.createClass({
+		imfo: {
+			but: { height: 110, width: 110, float: 'left', marginLeft: 40, marginBottom: 20 },
+			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.2em', margin: 6, textShadow: '2px 2px blue' }
+		},
+		turnwhat: function turnwhat() {
+			var auth = this.props.auth;
+			var state = this.props.spot.state;
+			//console.log('state is :'+state)
+			if (state == 'off') {
+				if (auth) {
+					var message = 'turn ON for: ' + this.state.value + ' min';
+					//return{message: message, img: "img/Waterfall_off.gif"}
+					this.pime = { message: message, img: 'img/waterfall_off.gif', imginfo: { img: 'img/waterfall_off.gif', clickable: true } };
+					return this.pime;
+				} else {
+					var message = 'registed users can control water';
+					//return{message: message, img: "img/Waterfall_off.gif"}
+					this.pime = { message: message, img: 'img/waterfall_off.gif', imginfo: { img: 'img/waterfall_off.gif', clickable: false } };
+					return this.pime;
+				}
+			} else if (state == 'timer' | state == 'on') {
+				if (auth) {
+					var message = this.props.spot.tleft + ' to go click Off';
+					//return{message: message, img: "img/Waterfall_on.gif"}
+					this.pime = { message: message, img: 'img/waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: true } };
+					return this.pime;
+				} else {
+					var message = this.props.spot.tleft + ' to go';
+					//return{message: message, img: "img/Waterfall_on.gif"}
+					this.pime = { message: message, img: 'img/waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: false } };
+					return this.pime;
+				}
+			} else if (state == 'waiting') {
+				this.pime = { message: 'waiting', img: 'img/waiting.gif', imginfo: { img: 'img/waiting.gif', clickable: false } };
+				return this.pime;
+			}
+		},
+		getInitialState: function getInitialState() {
+			return { value: 10, pime: { message: 'cat', img: 'img/waiting.gif' } };
+		},
+		componentDidMount: function componentDidMount() {
+			console.log(this.props.spot.spot);
+			return { value: this.props.spot.tleft };
+		},
+		handleChange: function handleChange(event) {
+			this.setState({ value: event.target.value });
+			//console.log(this.state.value)
+		},
+		handleClick: function handleClick() {
+			var state = this.props.spot.state;
+			if (state == 'off') {
+				//console.log('turning on');
+				console.log(this.props.spot.spot);
+				this.props.onUserInput({ spot: 'pond', til: this.state.value, state: 'timer' });
+			} else {
+				//console.log('turning off');
+				this.props.onUserInput({ spot: 'pond', til: -1, state: 'off' });
+			}
+		},
+		render: function render() {
+
+			return React.createElement(
+				'div',
+				null,
+				React.createElement(
+					'h4',
+					{ style: { color: 'yellow' } },
+					'pond'
+				),
+				React.createElement(
+					Butt,
+					{ imginfo: this.turnwhat().imginfo, imfo: this.imfo, onButClick: this.handleClick },
+					' ',
+					this.turnwhat().message,
+					' '
+				),
+				React.createElement('br', null),
+				React.createElement('input', { type: 'range', min: '1', max: '120', step: '1', value: this.state.value, onChange: this.handleChange }),
+				React.createElement('br', null)
+			);
+		}
+
+	});
+
+	module.exports = Pond;
+
+/***/ },
+/* 202 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -23668,7 +24040,7 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var Radium = __webpack_require__(200);
+	var Radium = __webpack_require__(203);
 	var React = __webpack_require__(1);
 
 	var Butt = (function (_React$Component) {
@@ -23795,31 +24167,31 @@
 	module.exports = Butt;
 
 /***/ },
-/* 200 */
+/* 203 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var Enhancer = __webpack_require__(203);
+	var Enhancer = __webpack_require__(206);
 
 	module.exports = function (ComposedComponent) {
 	  return Enhancer(ComposedComponent);
 	};
-	module.exports.Style = __webpack_require__(211);
-	module.exports.PrintStyleSheet = __webpack_require__(213);
-	module.exports.getState = __webpack_require__(201);
-	module.exports.keyframes = __webpack_require__(214);
-	module.exports.Config = __webpack_require__(209);
+	module.exports.Style = __webpack_require__(214);
+	module.exports.PrintStyleSheet = __webpack_require__(216);
+	module.exports.getState = __webpack_require__(204);
+	module.exports.keyframes = __webpack_require__(217);
+	module.exports.Config = __webpack_require__(212);
 
 /***/ },
-/* 201 */
+/* 204 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
 
 	'use strict';
 
-	var getStateKey = __webpack_require__(202);
+	var getStateKey = __webpack_require__(205);
 
 	var VALID_KEYS = [':active', ':focus', ':hover'];
 
@@ -23836,7 +24208,7 @@
 	module.exports = getState;
 
 /***/ },
-/* 202 */
+/* 205 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -23850,7 +24222,7 @@
 	module.exports = getStateKey;
 
 /***/ },
-/* 203 */
+/* 206 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/* @flow */
@@ -23865,8 +24237,8 @@
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
 
-	var resolveStyles = __webpack_require__(204);
-	var printStyles = __webpack_require__(210);
+	var resolveStyles = __webpack_require__(207);
+	var printStyles = __webpack_require__(213);
 
 	var enhanceWithRadium = function enhanceWithRadium(ComposedComponent) {
 	  var RadiumEnhancer = (function (_ComposedComponent) {
@@ -23947,7 +24319,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 204 */
+/* 207 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/* @flow */
@@ -23956,13 +24328,13 @@
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-	var MouseUpListener = __webpack_require__(205);
-	var getState = __webpack_require__(201);
-	var getStateKey = __webpack_require__(202);
-	var Prefixer = __webpack_require__(206);
-	var Config = __webpack_require__(209);
+	var MouseUpListener = __webpack_require__(208);
+	var getState = __webpack_require__(204);
+	var getStateKey = __webpack_require__(205);
+	var Prefixer = __webpack_require__(209);
+	var Config = __webpack_require__(212);
 
-	var ExecutionEnvironment = __webpack_require__(207);
+	var ExecutionEnvironment = __webpack_require__(210);
 	var React = __webpack_require__(1);
 
 	// babel-eslint 3.1.7 fails here for some reason, error:
@@ -24323,7 +24695,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 205 */
+/* 208 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -24367,7 +24739,7 @@
 	};
 
 /***/ },
-/* 206 */
+/* 209 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(process) {/**
@@ -24377,8 +24749,8 @@
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(207);
-	var arrayFind = __webpack_require__(208);
+	var ExecutionEnvironment = __webpack_require__(210);
+	var arrayFind = __webpack_require__(211);
 
 	var VENDOR_PREFIX_REGEX = /-(moz|webkit|ms|o)-/;
 
@@ -24789,7 +25161,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 207 */
+/* 210 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -24834,7 +25206,7 @@
 
 
 /***/ },
-/* 208 */
+/* 211 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -24863,14 +25235,14 @@
 
 
 /***/ },
-/* 209 */
+/* 212 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
 
 	'use strict';
 
-	var ExecutionEnvironment = __webpack_require__(207);
+	var ExecutionEnvironment = __webpack_require__(210);
 
 	var _matchMediaFunction = ExecutionEnvironment.canUseDOM && window && window.matchMedia && function (mediaQueryString) {
 	  return window.matchMedia(mediaQueryString);
@@ -24891,7 +25263,7 @@
 	};
 
 /***/ },
-/* 210 */
+/* 213 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -24969,13 +25341,13 @@
 	};
 
 /***/ },
-/* 211 */
+/* 214 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
-	var createMarkupForStyles = __webpack_require__(212);
-	var Prefixer = __webpack_require__(206);
+	var createMarkupForStyles = __webpack_require__(215);
+	var Prefixer = __webpack_require__(209);
 
 	var React = __webpack_require__(1);
 
@@ -25060,7 +25432,7 @@
 	module.exports = Style;
 
 /***/ },
-/* 212 */
+/* 215 */
 /***/ function(module, exports) {
 
 	/* @flow */
@@ -25077,15 +25449,15 @@
 	module.exports = createMarkupForStyles;
 
 /***/ },
-/* 213 */
+/* 216 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
 
-	var Style = __webpack_require__(211);
-	var printStyles = __webpack_require__(210);
+	var Style = __webpack_require__(214);
+	var printStyles = __webpack_require__(213);
 
 	var PrintStyle = React.createClass({
 	  displayName: 'PrintStyle',
@@ -25124,17 +25496,17 @@
 	module.exports = PrintStyle;
 
 /***/ },
-/* 214 */
+/* 217 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* @flow */
 
 	'use strict';
 
-	var createMarkupForStyles = __webpack_require__(212);
-	var Prefixer = __webpack_require__(206);
+	var createMarkupForStyles = __webpack_require__(215);
+	var Prefixer = __webpack_require__(209);
 
-	var ExecutionEnvironment = __webpack_require__(207);
+	var ExecutionEnvironment = __webpack_require__(210);
 
 	var isAnimationSupported = ExecutionEnvironment.canUseDOM && Prefixer.getPrefixedPropertyName('animation') !== false;
 
@@ -25183,775 +25555,13 @@
 	module.exports = keyframes;
 
 /***/ },
-/* 215 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _reactRouter = __webpack_require__(157);
-
-	var React = __webpack_require__(1);
-
-	var imgurl = 'img/bkg-water.png';
-	var mStyle = {
-	  li: {
-	    display: 'inline',
-	    padding: '10px'
-	  },
-	  ul: {},
-	  span: {
-	    color: 'yellow'
-	  },
-	  div: {
-	    height: '900',
-	    background: 'green',
-	    backgroundImage: 'url(' + imgurl + ')'
-	  }
-	};
-
-	var Main = React.createClass({
-	  displayName: 'Main',
-
-	  render: function render() {
-	    return React.createElement(
-	      'div',
-	      { style: mStyle.div },
-	      React.createElement(
-	        'ul',
-	        null,
-	        React.createElement(
-	          'li',
-	          { style: mStyle.li },
-	          React.createElement(
-	            _reactRouter.Link,
-	            { to: '/yard' },
-	            React.createElement(
-	              'span',
-	              { style: mStyle.span },
-	              ' yard '
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          'li',
-	          { style: mStyle.li },
-	          React.createElement(
-	            _reactRouter.Link,
-	            { to: '/login' },
-	            React.createElement(
-	              'span',
-	              { style: mStyle.span },
-	              ' login '
-	            )
-	          )
-	        ),
-	        React.createElement(
-	          'li',
-	          { style: mStyle.li },
-	          React.createElement(
-	            _reactRouter.Link,
-	            { to: '/signup' },
-	            React.createElement(
-	              'span',
-	              { style: mStyle.span },
-	              ' signup '
-	            )
-	          )
-	        )
-	      ),
-	      React.createElement(
-	        'div',
-	        { className: 'container' },
-	        React.createElement(_reactRouter.RouteHandler, null)
-	      )
-	    );
-	  }
-	});
-
-	module.exports = Main;
-
-/***/ },
-/* 216 */,
-/* 217 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	var _servicesAuthService = __webpack_require__(218);
-
-	var _servicesAuthService2 = _interopRequireDefault(_servicesAuthService);
-
-	var React = __webpack_require__(1);
-	var Navigation = __webpack_require__(157).Navigation;
-	var Spots = __webpack_require__(225);
-
-	var url = '73.249.62.27';
-	//var url = '10.0.1.155';
-	var port = '8088';
-
-	var socket, sse;
-
-	var Yard = React.createClass({
-		displayName: 'Yard',
-
-		mixins: [Navigation],
-		getInitialState: function getInitialState() {
-			return { spots: { 'pond': { 'spot': 'pond', 'tleft': -99, 'state': 'waiting' }, 'center': { 'spot': 'center', 'tleft': -99, 'state': 'waiting' }, 'bridge': { 'spot': 'bridge', 'tleft': -99, 'state': 'waiting' } }, authorized: false };
-		},
-		handleUserInput: function handleUserInput(timerSet) {
-			console.log('handling user input ');
-			console.log(timerSet);
-			if (this.state.authorized) {
-				var geturl = 'http://' + url + ':' + port + '/ctrlWater/';
-				$.get(geturl, timerSet, (function (data) {
-					console.log(data.status);
-					this.setState({ spots: data.status });
-				}).bind(this));
-			} else {
-				console.log('yo not authorized');
-			}
-		},
-		componentDidMount: function componentDidMount() {
-			console.log('yard mounted');
-			_servicesAuthService2['default'].esbuenToken(this.tokenCallback);
-			var that = this;
-			$.get('http://' + url + ':' + port + '/report/', (function (data) {
-				this.setState({ spots: data.spots });
-			}).bind(this));
-			sse = new EventSource('http://' + url + ':' + port + '/my_event_source');
-			sse.onmessage = (function (message) {
-				//console.log('message fron sse')
-				var sseData = JSON.parse(message.data).data;
-				//console.log(sseData);
-				this.setState({ spots: sseData });
-			}).bind(this);
-		},
-
-		tokenCallback: function tokenCallback(tf) {
-			this.setState({ authorized: tf });
-			console.log(tf);
-		},
-
-		componentWillUnmount: function componentWillUnmount() {
-			console.log('yard unmountd');
-			sse.close();
-		},
-
-		render: function render() {
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(Spots, { spots: this.state.spots, relayUserInput: this.handleUserInput, auth: this.state.authorized })
-			);
-		}
-	});
-
-	module.exports = Yard;
-
-/***/ },
 /* 218 */
-/***/ function(module, exports) {
-
-	'use strict';
-
-	Object.defineProperty(exports, '__esModule', {
-	  value: true
-	});
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	var url = 'http://sitebuilt.net:3002';
-
-	var AuthService = (function () {
-	  function AuthService() {
-	    _classCallCheck(this, AuthService);
-
-	    this.getData();
-	    console.log(this.getData());
-	  }
-
-	  _createClass(AuthService, [{
-	    key: 'signup',
-	    value: function signup(username, email) {
-	      this.setUser(username);
-	      $.ajax({
-	        url: url + '/api/ismatch/?name=' + username + '&email=' + email,
-	        success: (function (data) {
-	          console.log(data);
-	        }).bind(this)
-	      });
-	      return {
-	        url: 'SIGNUP_URL',
-	        method: 'POST',
-	        crossOrigin: true,
-	        type: 'json',
-	        udata: {
-	          username: username,
-	          email: email
-	        }
-	      };
-	    }
-	  }, {
-	    key: 'fetchToken',
-	    value: function fetchToken(user, apikey, callback) {
-	      var appdata = { apikey: apikey };
-	      $.ajax({
-	        url: url + '/api/authenticate/' + user,
-	        type: 'POST',
-	        data: appdata,
-	        success: function success(data, status, response) {
-	          callback(response, user);
-	        },
-	        error: (function (response) {
-	          callback(response, user);
-	        }).bind(this)
-	      });
-	    }
-	  }, {
-	    key: 'getData',
-	    value: function getData() {
-	      if (localStorage.casc) {
-	        var ls = JSON.parse(localStorage.casc);
-	        var token = ls.token || '';
-	        var user = ls.user || '';
-	        return { user: user, token: token };
-	      } else {
-	        return { user: '', token: '' };
-	      }
-	    }
-	  }, {
-	    key: 'setData',
-	    value: function setData(d) {
-	      localStorage.setItem('casc', JSON.stringify(d));
-	    }
-	  }, {
-	    key: 'setUser',
-	    value: function setUser(uname) {
-	      var d = this.getData();
-	      d.user = uname;
-	      this.setData(d);
-	    }
-	  }, {
-	    key: 'setToken',
-	    value: function setToken(tok) {
-	      var d = this.getData();
-	      d.token = tok;
-	      this.setData(d);
-	    }
-	  }, {
-	    key: 'getToken',
-	    value: function getToken() {
-	      var d = this.getData();
-	      return d.token;
-	    }
-	  }, {
-	    key: 'getUser',
-	    value: function getUser() {
-	      return this.getData().user;
-	    }
-	  }, {
-	    key: 'esbuenToken',
-	    value: function esbuenToken(ydcb) {
-	      var tok = this.getToken();
-	      var user = this.getUser();
-	      var retval;
-	      if (tok) {
-	        $.ajax({
-	          url: url + '/api/account',
-	          headers: { 'Authorization': 'Bearer ' + tok },
-	          success: function success(data, status, response) {
-	            if (data.name == user) {
-	              ydcb(true);
-	            }
-	          },
-	          error: (function (response) {
-	            ydcb(false);
-	          }).bind(this)
-	        });
-	      } else {
-	        ydcb(false);
-	      }
-	    }
-	  }]);
-
-	  return AuthService;
-	})();
-
-	function callback(f) {
-	  console.log(f);
-	}
-
-	exports['default'] = new AuthService();
-	module.exports = exports['default'];
-
-/***/ },
-/* 219 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// /lib contains the transpiled code. It's ignored by git but picked up by
-	// npm publish. See package.json's "prerelease" and "build" scripts
-	module.exports = __webpack_require__(220);
-
-
-/***/ },
-/* 220 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
-	  if (true) {
-	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, module, __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	  } else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
-	    factory(exports, module, require('react'));
-	  } else {
-	    var mod = {
-	      exports: {}
-	    };
-	    factory(mod.exports, mod, global.React);
-	    global.RadioGroup = mod.exports;
-	  }
-	})(this, function (exports, module, _react) {
-	  'use strict';
-
-	  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-	  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	  var _React = _interopRequireDefault(_react);
-
-	  function radio(name, selectedValue, onChange) {
-	    return _React['default'].createClass({
-	      render: function render() {
-	        return _React['default'].createElement('input', _extends({}, this.props, {
-	          type: 'radio',
-	          name: name,
-	          checked: this.props.value === selectedValue,
-	          onChange: onChange.bind(null, this.props.value) }));
-	      }
-	    });
-	  }
-
-	  module.exports = _React['default'].createClass({
-	    displayName: 'index',
-
-	    propTypes: {
-	      name: _react.PropTypes.string,
-	      selectedValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number]),
-	      onChange: _react.PropTypes.func,
-	      children: _react.PropTypes.func
-	    },
-
-	    render: function render() {
-	      var _props = this.props;
-	      var name = _props.name;
-	      var selectedValue = _props.selectedValue;
-	      var onChange = _props.onChange;
-	      var children = _props.children;
-
-	      return _React['default'].createElement(
-	        'div',
-	        null,
-	        children && children(radio(name, selectedValue, onChange))
-	      );
-	    }
-	  });
-	});
-
-/***/ },
-/* 221 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _servicesAuthService = __webpack_require__(218);
-
-	var _servicesAuthService2 = _interopRequireDefault(_servicesAuthService);
-
-	var Login = (function (_React$Component) {
-	  function Login() {
-	    _classCallCheck(this, Login);
-
-	    _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this);
-	    this.state = {
-	      apikey: '',
-	      user: _servicesAuthService2['default'].getUser(),
-	      auth: false,
-	      message: 'if you have signed up, your apikey will set up this device'
-	    };
-	    this.fetchToken = this.fetchToken.bind(this);
-	    this.fetchCallback = this.fetchCallback.bind(this);
-	    this.handleChange = this.handleChange.bind(this);
-	    this.componentDidMount = this.componentDidMount.bind(this);
-	  }
-
-	  _inherits(Login, _React$Component);
-
-	  _createClass(Login, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      _servicesAuthService2['default'].esbuenToken((function (tf) {
-	        console.log(tf);
-	        if (tf) {
-	          this.setState({ auth: tf, message: 'you are all logged in...moving to app' });
-	          setTimeout((function () {
-	            this.context.router.transitionTo('yard');
-	          }).bind(this), 2000);
-	        }
-	      }).bind(this));
-	    }
-	  }, {
-	    key: 'fetchToken',
-	    value: function fetchToken(e) {
-	      e.preventDefault();
-	      console.log(this.state.apikey);
-	      _servicesAuthService2['default'].fetchToken(this.state.user, this.state.apikey, this.fetchCallback);
-	    }
-	  }, {
-	    key: 'fetchCallback',
-	    value: function fetchCallback(response, user) {
-	      console.log(user);
-	      var msg;
-	      if (response.status == 200) {
-	        if (response.responseJSON.message == 'token here') {
-	          console.log('now save that token and switch to Yard');
-	          _servicesAuthService2['default'].setData({ user: user, token: response.responseJSON.token });
-	          this.context.router.transitionTo('yard');
-	        }
-	      }
-	      console.log(response);
-	    }
-	  }, {
-	    key: 'handleChange',
-	    value: function handleChange(e) {
-	      e.preventDefault();
-	      var obj = {};
-	      obj[e.target.name] = e.target.value;
-	      console.log(obj);
-	      this.setState(obj);
-	    }
-	  }, {
-	    key: 'doNothing',
-	    value: function doNothing(e) {
-	      e.preventDefault();
-	      var obj = {};
-	      obj[e.target.name] = e.target.value;
-	      console.log(obj);
-	      this.setState(obj);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2['default'].createElement(
-	        'div',
-	        { className: 'login jumbotron center-block' },
-	        _react2['default'].createElement(
-	          'h2',
-	          null,
-	          'Login'
-	        ),
-	        _react2['default'].createElement(
-	          'h4',
-	          null,
-	          this.state.message,
-	          ' '
-	        ),
-	        _react2['default'].createElement(
-	          'form',
-	          { role: 'form' },
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'form-group' },
-	            _react2['default'].createElement(
-	              'label',
-	              { htmlFor: 'username' },
-	              'Username'
-	            ),
-	            _react2['default'].createElement('input', { type: 'text', className: 'form-control', value: this.state.user, id: 'username', name: 'user', placeholder: 'Username', onBlur: this.handleChange, onChange: this.doNothing })
-	          ),
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'form-group' },
-	            _react2['default'].createElement(
-	              'label',
-	              { htmlFor: 'apikey' },
-	              'Apikey'
-	            ),
-	            _react2['default'].createElement('input', { type: 'text', className: 'form-control', id: 'apikey', ref: 'apikey', name: 'apikey', placeholder: 'your apikey from email', onBlur: this.handleChange })
-	          ),
-	          _react2['default'].createElement(
-	            'button',
-	            { type: 'submit', className: 'btn btn-default', onClick: this.fetchToken.bind(this) },
-	            'Submit'
-	          )
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Login;
-	})(_react2['default'].Component);
-
-	Login.contextTypes = {
-	  router: _react2['default'].PropTypes.func.isRequired
-	};
-
-	module.exports = Login;
-
-/***/ },
-/* 222 */
-/***/ function(module, exports, __webpack_require__) {
-
-	//import React from 'react/addons';
-	'use strict';
-
-	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
-
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
-
-	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
-
-	var _react = __webpack_require__(1);
-
-	var _react2 = _interopRequireDefault(_react);
-
-	var _servicesAuthService = __webpack_require__(218);
-
-	var _servicesAuthService2 = _interopRequireDefault(_servicesAuthService);
-
-	//import Router from 'react-router'
-
-	var Signup = (function (_React$Component) {
-	  function Signup() {
-	    _classCallCheck(this, Signup);
-
-	    _get(Object.getPrototypeOf(Signup.prototype), 'constructor', this).call(this);
-	    this.state = {
-	      user: '',
-	      email: '',
-	      auth: false,
-	      message: 'we will send you an apikey, then login with it'
-	    };
-	    this.handleChange = this.handleChange.bind(this);
-	    this.signup = this.signup.bind(this);
-	    this.componentDidMount = this.componentDidMount.bind(this);
-	  }
-
-	  _inherits(Signup, _React$Component);
-
-	  _createClass(Signup, [{
-	    key: 'componentDidMount',
-	    value: function componentDidMount() {
-	      _servicesAuthService2['default'].esbuenToken((function (tf) {
-	        console.log(tf);
-	        if (tf) {
-	          this.setState({ auth: tf, message: 'you are all signed up...moving to app' });
-	          setTimeout((function () {
-	            this.context.router.transitionTo('yard');
-	          }).bind(this), 2000);
-	        }
-	      }).bind(this));
-	    }
-	  }, {
-	    key: 'signup',
-	    value: function signup(e) {
-	      e.preventDefault();
-	      var udata = _servicesAuthService2['default'].signup(this.state.user, this.state.email);
-	      console.log(udata);
-	      console.log(_servicesAuthService2['default'].getData());
-	      this.context.router.transitionTo('login');
-	    }
-	  }, {
-	    key: 'handleChange',
-	    value: function handleChange(e) {
-	      e.preventDefault();
-	      var obj = {};
-	      obj[e.target.name] = e.target.value;
-	      console.log(obj);
-	      this.setState(obj);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      return _react2['default'].createElement(
-	        'div',
-	        { className: 'login jumbotron center-block' },
-	        _react2['default'].createElement(
-	          'h2',
-	          null,
-	          'Signup'
-	        ),
-	        _react2['default'].createElement(
-	          'h4',
-	          null,
-	          this.state.message,
-	          ' '
-	        ),
-	        _react2['default'].createElement(
-	          'form',
-	          { role: 'form' },
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'form-group' },
-	            _react2['default'].createElement(
-	              'label',
-	              { htmlFor: 'username' },
-	              'Username'
-	            ),
-	            _react2['default'].createElement('input', { type: 'text', className: 'form-control', id: 'username', name: 'user', placeholder: 'Username', onBlur: this.handleChange })
-	          ),
-	          _react2['default'].createElement(
-	            'div',
-	            { className: 'form-group' },
-	            _react2['default'].createElement(
-	              'label',
-	              { htmlFor: 'email' },
-	              'Email'
-	            ),
-	            _react2['default'].createElement('input', { type: 'email', className: 'form-control', id: 'email', name: 'email', ref: 'email', placeholder: 'Email', onBlur: this.handleChange })
-	          ),
-	          _react2['default'].createElement(
-	            'button',
-	            { type: 'submit', className: 'btn btn-default', onClick: this.signup.bind(this) },
-	            'Submit'
-	          )
-	        )
-	      );
-	    }
-	  }]);
-
-	  return Signup;
-	})(_react2['default'].Component);
-
-	Signup.contextTypes = {
-	  router: _react2['default'].PropTypes.func.isRequired
-	};
-
-	module.exports = Signup;
-
-/***/ },
-/* 223 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Butt = __webpack_require__(199);
-
-	var Pond = new React.createClass({
-		imfo: {
-			but: { height: 110, width: 110, float: 'left', marginLeft: 40, marginBottom: 20 },
-			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.2em', margin: 6, textShadow: '2px 2px blue' }
-		},
-		turnwhat: function turnwhat() {
-			var auth = this.props.auth;
-			var state = this.props.spot.state;
-			//console.log('state is :'+state)
-			if (state == 'off') {
-				if (auth) {
-					var message = 'turn ON for: ' + this.state.value + ' min';
-					//return{message: message, img: "img/Waterfall_off.gif"}
-					this.pime = { message: message, img: 'img/waterfall_off.gif', imginfo: { img: 'img/waterfall_off.gif', clickable: true } };
-					return this.pime;
-				} else {
-					var message = 'registed users can control water';
-					//return{message: message, img: "img/Waterfall_off.gif"}
-					this.pime = { message: message, img: 'img/waterfall_off.gif', imginfo: { img: 'img/waterfall_off.gif', clickable: false } };
-					return this.pime;
-				}
-			} else if (state == 'timer' | state == 'on') {
-				if (auth) {
-					var message = this.props.spot.tleft + ' to go click Off';
-					//return{message: message, img: "img/Waterfall_on.gif"}
-					this.pime = { message: message, img: 'img/waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: true } };
-					return this.pime;
-				} else {
-					var message = this.props.spot.tleft + ' to go';
-					//return{message: message, img: "img/Waterfall_on.gif"}
-					this.pime = { message: message, img: 'img/waterfall_on.gif', imginfo: { img: 'img/waterfall_on.gif', clickable: false } };
-					return this.pime;
-				}
-			} else if (state == 'waiting') {
-				this.pime = { message: 'waiting', img: 'img/waiting.gif', imginfo: { img: 'img/waiting.gif', clickable: false } };
-				return this.pime;
-			}
-		},
-		getInitialState: function getInitialState() {
-			return { value: 10, pime: { message: 'cat', img: 'img/waiting.gif' } };
-		},
-		componentDidMount: function componentDidMount() {
-			console.log(this.props.spot.spot);
-			return { value: this.props.spot.tleft };
-		},
-		handleChange: function handleChange(event) {
-			this.setState({ value: event.target.value });
-			//console.log(this.state.value)
-		},
-		handleClick: function handleClick() {
-			var state = this.props.spot.state;
-			if (state == 'off') {
-				//console.log('turning on');
-				console.log(this.props.spot.spot);
-				this.props.onUserInput({ spot: 'pond', til: this.state.value, state: 'timer' });
-			} else {
-				//console.log('turning off');
-				this.props.onUserInput({ spot: 'pond', til: -1, state: 'off' });
-			}
-		},
-		render: function render() {
-
-			return React.createElement(
-				'div',
-				null,
-				React.createElement(
-					'h4',
-					{ style: { color: 'yellow' } },
-					'pond'
-				),
-				React.createElement(
-					Butt,
-					{ imginfo: this.turnwhat().imginfo, imfo: this.imfo, onButClick: this.handleClick },
-					this.turnwhat().message,
-					' '
-				),
-				React.createElement('br', null),
-				React.createElement('input', { type: 'range', min: '1', max: '120', step: '1', value: this.state.value, onChange: this.handleChange }),
-				React.createElement('br', null)
-			);
-		}
-
-	});
-
-	module.exports = Pond;
-
-/***/ },
-/* 224 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-
-	var React = __webpack_require__(1);
-	var Butt = __webpack_require__(199);
+	var Butt = __webpack_require__(202);
 	var RadioGroup = __webpack_require__(219);
 
 	var Spot = new React.createClass({
@@ -26102,57 +25712,446 @@
 	module.exports = Spot;
 
 /***/ },
-/* 225 */
+/* 219 */
+/***/ function(module, exports, __webpack_require__) {
+
+	// /lib contains the transpiled code. It's ignored by git but picked up by
+	// npm publish. See package.json's "prerelease" and "build" scripts
+	module.exports = __webpack_require__(220);
+
+
+/***/ },
+/* 220 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (global, factory) {
+	  if (true) {
+	    !(__WEBPACK_AMD_DEFINE_ARRAY__ = [exports, module, __webpack_require__(1)], __WEBPACK_AMD_DEFINE_FACTORY__ = (factory), __WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ? (__WEBPACK_AMD_DEFINE_FACTORY__.apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__)) : __WEBPACK_AMD_DEFINE_FACTORY__), __WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	  } else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
+	    factory(exports, module, require('react'));
+	  } else {
+	    var mod = {
+	      exports: {}
+	    };
+	    factory(mod.exports, mod, global.React);
+	    global.RadioGroup = mod.exports;
+	  }
+	})(this, function (exports, module, _react) {
+	  'use strict';
+
+	  var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+	  function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	  var _React = _interopRequireDefault(_react);
+
+	  function radio(name, selectedValue, onChange) {
+	    return _React['default'].createClass({
+	      render: function render() {
+	        return _React['default'].createElement('input', _extends({}, this.props, {
+	          type: 'radio',
+	          name: name,
+	          checked: this.props.value === selectedValue,
+	          onChange: onChange.bind(null, this.props.value) }));
+	      }
+	    });
+	  }
+
+	  module.exports = _React['default'].createClass({
+	    displayName: 'index',
+
+	    propTypes: {
+	      name: _react.PropTypes.string,
+	      selectedValue: _react.PropTypes.oneOfType([_react.PropTypes.string, _react.PropTypes.number]),
+	      onChange: _react.PropTypes.func,
+	      children: _react.PropTypes.func
+	    },
+
+	    render: function render() {
+	      var _props = this.props;
+	      var name = _props.name;
+	      var selectedValue = _props.selectedValue;
+	      var onChange = _props.onChange;
+	      var children = _props.children;
+
+	      return _React['default'].createElement(
+	        'div',
+	        null,
+	        children && children(radio(name, selectedValue, onChange))
+	      );
+	    }
+	  });
+	});
+
+/***/ },
+/* 221 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 
 	var React = __webpack_require__(1);
-	var Pond = __webpack_require__(223);
-	var Spot = __webpack_require__(224);
+	var Butt = __webpack_require__(202);
 
-	var Spots = React.createClass({
-		displayName: 'Spots',
+	var Reg = React.createClass({
+		displayName: 'Reg',
 
-		comingUserInput: function comingUserInput(timerSet) {
-			var tstr = JSON.stringify(timerSet);
-			var tobj = JSON.parse(tstr);
-			tobj.state = 'waiting';
-			this.props.spots[tobj.spot].state = 'waiting';
-			this.props.relayUserInput(timerSet);
+		componentDidMount: function componentDidMount() {},
+		//imginfo: {img:'img/Waterfall_on.gif', clickable:t   rue},
+		imginfo: { img: 'img/waterfall_on.gif', clickable: true },
+		imgemail: { img: 'img/Email.gif', clickable: true },
+		message: { con: 'get token', discon: 'delete token', email: 'send me a request' },
+		imfo: {
+			but: { height: 100, width: 100, float: 'right' },
+			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.34em', margin: 6 }
 		},
-		componentDidMount: function componentDidMount() {
-			this.checkAuth();
+		imfe: {
+			but: { height: 50, width: 50, float: 'left' },
+			txt: { left: '3%', top: '3%', color: 'white', fontSize: '1.34em', margin: 6 }
 		},
-		checkAuth: function checkAuth() {
-			if (!this.props.auth) {
-				return 'signup and login to make changes';
-			} else {
-				return '';
-			}
+		handleTimerButClick: function handleTimerButClick() {
+			var appdata = { apikey: 'Ricuhiqozarulerofekuqepa' };
+			var user = 'tim';
+			console.log('handled in reg');
+			$.post('http://sitebuilt.net:3002/api/authenticate/' + user, appdata, (function (data) {
+				console.log(data);
+				if (data.message == 'token here') {
+					console.log(data.message);
+					localStorage.setItem('casc', JSON.stringify({ user: user, token: data.token }));
+					var ls = JSON.parse(localStorage.casc);
+					console.log(ls.user);
+				}
+			}).bind(this));
+		},
+		deleteLS: function deleteLS() {
+			console.log('deleting token');
+			localStorage.removeItem('casc');
+		},
+		emailMe: function emailMe() {
+
+			console.log('emailing me');
+			window.open('mailto:mckenna.tim@gmail.com?subject=tryit&body=hey');
 		},
 		render: function render() {
 			return React.createElement(
 				'div',
-				{ className: 'sprklr' },
+				null,
 				React.createElement(
-					'h1',
-					null,
-					'Cascada'
+					Butt,
+					{ imginfo: this.imginfo, imfo: this.imfo, onButClick: this.handleTimerButClick },
+					this.message.con,
+					' '
 				),
 				React.createElement(
-					'p',
-					{ style: { color: 'red', fontSize: 18, textShadow: '1px 1px white' } },
-					this.checkAuth()
+					Butt,
+					{ imginfo: this.imginfo, imfo: this.imfo, onButClick: this.deleteLS },
+					this.message.discon,
+					' '
 				),
-				React.createElement(Pond, { onUserInput: this.comingUserInput, spot: this.props.spots.pond, auth: this.props.auth }),
-				React.createElement(Spot, { onUserInput: this.comingUserInput, spot: this.props.spots.bridge, auth: this.props.auth }),
-				React.createElement(Spot, { onUserInput: this.comingUserInput, spot: this.props.spots.center, auth: this.props.auth })
+				React.createElement(
+					Butt,
+					{ imginfo: this.imgemail, imfo: this.imfe, onButClick: this.emailMe },
+					this.message.email,
+					' '
+				),
+				React.createElement(
+					'a',
+					{ href: 'mailto:mckenna.tim@gmail.com?subject=tryit&body=hey' },
+					'mail me something'
+				)
 			);
 		}
 	});
 
-	module.exports = Spots;
+	module.exports = Reg;
+
+/***/ },
+/* 222 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _servicesAuthService = __webpack_require__(199);
+
+	var _servicesAuthService2 = _interopRequireDefault(_servicesAuthService);
+
+	var Login = (function (_React$Component) {
+	  function Login() {
+	    _classCallCheck(this, Login);
+
+	    _get(Object.getPrototypeOf(Login.prototype), 'constructor', this).call(this);
+	    this.state = {
+	      apikey: '',
+	      user: _servicesAuthService2['default'].getUser(),
+	      auth: false,
+	      message: 'if you have signed up, your apikey will set up this device'
+	    };
+	    this.fetchToken = this.fetchToken.bind(this);
+	    this.fetchCallback = this.fetchCallback.bind(this);
+	    this.handleChange = this.handleChange.bind(this);
+	    this.componentDidMount = this.componentDidMount.bind(this);
+	  }
+
+	  _inherits(Login, _React$Component);
+
+	  _createClass(Login, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      _servicesAuthService2['default'].esbuenToken((function (tf) {
+	        console.log(tf);
+	        if (tf) {
+	          this.setState({ auth: tf, message: 'you are all logged in...moving to app' });
+	          setTimeout((function () {
+	            this.context.router.transitionTo('yard');
+	          }).bind(this), 2000);
+	        }
+	      }).bind(this));
+	    }
+	  }, {
+	    key: 'fetchToken',
+	    value: function fetchToken(e) {
+	      e.preventDefault();
+	      console.log(this.state.apikey);
+	      _servicesAuthService2['default'].fetchToken(this.state.user, this.state.apikey, this.fetchCallback);
+	    }
+	  }, {
+	    key: 'fetchCallback',
+	    value: function fetchCallback(response, user) {
+	      console.log(user);
+	      var msg;
+	      if (response.status == 200) {
+	        if (response.responseJSON.message == 'token here') {
+	          console.log('now save that token and switch to Yard');
+	          _servicesAuthService2['default'].setData({ user: user, token: response.responseJSON.token });
+	          this.context.router.transitionTo('yard');
+	        }
+	      }
+	      console.log(response);
+	    }
+	  }, {
+	    key: 'handleChange',
+	    value: function handleChange(e) {
+	      e.preventDefault();
+	      var obj = {};
+	      obj[e.target.name] = e.target.value;
+	      console.log(obj);
+	      this.setState(obj);
+	    }
+	  }, {
+	    key: 'doNothing',
+	    value: function doNothing(e) {
+	      e.preventDefault();
+	      var obj = {};
+	      obj[e.target.name] = e.target.value;
+	      console.log(obj);
+	      this.setState(obj);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2['default'].createElement(
+	        'div',
+	        { className: 'login jumbotron center-block' },
+	        _react2['default'].createElement(
+	          'h2',
+	          null,
+	          'Login'
+	        ),
+	        _react2['default'].createElement(
+	          'h4',
+	          null,
+	          this.state.message,
+	          ' '
+	        ),
+	        _react2['default'].createElement(
+	          'form',
+	          { role: 'form' },
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2['default'].createElement(
+	              'label',
+	              { htmlFor: 'username' },
+	              'Username'
+	            ),
+	            _react2['default'].createElement('input', { type: 'text', className: 'form-control', value: this.state.user, id: 'username', name: 'user', placeholder: 'Username', onBlur: this.handleChange, onChange: this.doNothing })
+	          ),
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2['default'].createElement(
+	              'label',
+	              { htmlFor: 'apikey' },
+	              'Apikey'
+	            ),
+	            _react2['default'].createElement('input', { type: 'text', className: 'form-control', id: 'apikey', ref: 'apikey', name: 'apikey', placeholder: 'your apikey from email', onBlur: this.handleChange })
+	          ),
+	          _react2['default'].createElement(
+	            'button',
+	            { type: 'submit', className: 'btn btn-default', onClick: this.fetchToken.bind(this) },
+	            'Submit'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Login;
+	})(_react2['default'].Component);
+
+	Login.contextTypes = {
+	  router: _react2['default'].PropTypes.func.isRequired
+	};
+
+	module.exports = Login;
+
+/***/ },
+/* 223 */
+/***/ function(module, exports, __webpack_require__) {
+
+	//import React from 'react/addons';
+	'use strict';
+
+	var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+
+	var _get = function get(_x, _x2, _x3) { var _again = true; _function: while (_again) { var object = _x, property = _x2, receiver = _x3; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x = parent; _x2 = property; _x3 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+
+	function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; }
+
+	var _react = __webpack_require__(1);
+
+	var _react2 = _interopRequireDefault(_react);
+
+	var _servicesAuthService = __webpack_require__(199);
+
+	var _servicesAuthService2 = _interopRequireDefault(_servicesAuthService);
+
+	//import Router from 'react-router'
+
+	var Signup = (function (_React$Component) {
+	  function Signup() {
+	    _classCallCheck(this, Signup);
+
+	    _get(Object.getPrototypeOf(Signup.prototype), 'constructor', this).call(this);
+	    this.state = {
+	      user: '',
+	      email: '',
+	      auth: false,
+	      message: 'we will send you an apikey, then login with it'
+	    };
+	    this.handleChange = this.handleChange.bind(this);
+	    this.signup = this.signup.bind(this);
+	    this.componentDidMount = this.componentDidMount.bind(this);
+	  }
+
+	  _inherits(Signup, _React$Component);
+
+	  _createClass(Signup, [{
+	    key: 'componentDidMount',
+	    value: function componentDidMount() {
+	      _servicesAuthService2['default'].esbuenToken((function (tf) {
+	        console.log(tf);
+	        if (tf) {
+	          this.setState({ auth: tf, message: 'you are all signed up...moving to app' });
+	          setTimeout((function () {
+	            this.context.router.transitionTo('yard');
+	          }).bind(this), 2000);
+	        }
+	      }).bind(this));
+	    }
+	  }, {
+	    key: 'signup',
+	    value: function signup(e) {
+	      e.preventDefault();
+	      var udata = _servicesAuthService2['default'].signup(this.state.user, this.state.email);
+	      console.log(udata);
+	      console.log(_servicesAuthService2['default'].getData());
+	      this.context.router.transitionTo('login');
+	    }
+	  }, {
+	    key: 'handleChange',
+	    value: function handleChange(e) {
+	      e.preventDefault();
+	      var obj = {};
+	      obj[e.target.name] = e.target.value;
+	      console.log(obj);
+	      this.setState(obj);
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      return _react2['default'].createElement(
+	        'div',
+	        { className: 'login jumbotron center-block' },
+	        _react2['default'].createElement(
+	          'h2',
+	          null,
+	          'Signup'
+	        ),
+	        _react2['default'].createElement(
+	          'h4',
+	          null,
+	          this.state.message,
+	          ' '
+	        ),
+	        _react2['default'].createElement(
+	          'form',
+	          { role: 'form' },
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2['default'].createElement(
+	              'label',
+	              { htmlFor: 'username' },
+	              'Username'
+	            ),
+	            _react2['default'].createElement('input', { type: 'text', className: 'form-control', id: 'username', name: 'user', placeholder: 'Username', onBlur: this.handleChange })
+	          ),
+	          _react2['default'].createElement(
+	            'div',
+	            { className: 'form-group' },
+	            _react2['default'].createElement(
+	              'label',
+	              { htmlFor: 'email' },
+	              'Email'
+	            ),
+	            _react2['default'].createElement('input', { type: 'email', className: 'form-control', id: 'email', name: 'email', ref: 'email', placeholder: 'Email', onBlur: this.handleChange })
+	          ),
+	          _react2['default'].createElement(
+	            'button',
+	            { type: 'submit', className: 'btn btn-default', onClick: this.signup.bind(this) },
+	            'Submit'
+	          )
+	        )
+	      );
+	    }
+	  }]);
+
+	  return Signup;
+	})(_react2['default'].Component);
+
+	Signup.contextTypes = {
+	  router: _react2['default'].PropTypes.func.isRequired
+	};
+
+	module.exports = Signup;
 
 /***/ }
 /******/ ]);
