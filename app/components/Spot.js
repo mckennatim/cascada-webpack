@@ -64,7 +64,7 @@ var Spot = new React.createClass({
 			this.tval = til;
 			this.ima= {img:'img/loading60.gif', clickable:true}
 		} else if (state=='waiting'){
-			console.log('radioland is waiting')
+			//console.log('radioland is waiting')
 			this.tval='';
 			this.ima = {img:'img/waiting.gif', clickable:false};
 		}
